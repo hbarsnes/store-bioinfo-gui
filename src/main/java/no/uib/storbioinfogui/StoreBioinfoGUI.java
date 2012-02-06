@@ -87,9 +87,9 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
     /**
      * Update the list of current projects.
      * 
-     * @param selectedProject 
+     * @param projectName the selected project name
      */
-    private void updateProjectsList(Project selectedProject) {
+    private void updateProjectsList(String projectName) {
 
         File[] allLocalProjects = localFolder.listFiles();
 
@@ -132,7 +132,7 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
                         numberOfDatasets
                     });
 
-            if (selectedProject != null && selectedProject.getName().equalsIgnoreCase(fileNames.get(i))) {
+            if (projectName != null && projectName.equalsIgnoreCase(fileNames.get(i))) {
                 selectedRow = projectsTable.getRowCount() - 1;
             }
         }
@@ -830,7 +830,7 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
 
                     if (metaDataAdded) {
                         // project created
-                        updateProjectsList(project);
+                        updateProjectsList(project.getName());
 
                         JOptionPane.showMessageDialog(this, "Project \'" + project.getName() + "\' created and selected.", "Project Created", JOptionPane.INFORMATION_MESSAGE);
                         return true;
@@ -1150,6 +1150,7 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
                 return;
             }
             
+            updateProjectsList(projectName);
             projectsTableMouseReleased(null);
             
             JOptionPane.showMessageDialog(this, "Dataset \'" + dataset.getName() + "\' created.", "Dataset Created", JOptionPane.INFORMATION_MESSAGE);
