@@ -56,7 +56,8 @@ public class NewDatasetDialog extends javax.swing.JDialog {
 
         datasetDetailsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Dataset Details"));
 
-        descriptionTextArea.setColumns(20);
+        descriptionTextArea.setColumns(10);
+        descriptionTextArea.setLineWrap(true);
         descriptionTextArea.setRows(3);
         descriptionTextArea.setWrapStyleWord(true);
         descriptionJScrollPane.setViewportView(descriptionTextArea);

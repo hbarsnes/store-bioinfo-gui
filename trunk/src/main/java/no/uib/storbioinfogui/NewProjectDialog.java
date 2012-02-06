@@ -60,7 +60,8 @@ public class NewProjectDialog extends javax.swing.JDialog {
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Project Details"));
 
-        descriptionJTextArea.setColumns(20);
+        descriptionJTextArea.setColumns(5);
+        descriptionJTextArea.setLineWrap(true);
         descriptionJTextArea.setRows(3);
         descriptionJTextArea.setWrapStyleWord(true);
         jScrollPane2.setViewportView(descriptionJTextArea);
