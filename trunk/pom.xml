@@ -125,6 +125,7 @@
                                     <directory>./</directory>
                                     <includes>
                                         <include>config/</include>
+                                        <include>StoreBioinfo.ico</include>
                                         <!--<include>data/</include>
                                         <include>LICENSE-2.0.txt</include>-->
                                     </includes>
