@@ -295,7 +295,8 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
         jLabel4.setText("Summary:");
 
         projectSummaryJTextField.setEditable(false);
-        projectSummaryJTextField.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        projectSummaryJTextField.setHorizontalAlignment(javax.swing.JTextField.LEFT);
+        projectSummaryJTextField.setMargin(new java.awt.Insets(2, 4, 2, 2));
 
         jLabel5.setText("Project Description");
 

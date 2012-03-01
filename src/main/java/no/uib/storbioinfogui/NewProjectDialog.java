@@ -1,5 +1,6 @@
 package no.uib.storbioinfogui;
 
+import java.awt.event.KeyEvent;
 import no.uib.storbioinfogui.data.Project;
 import javax.swing.JOptionPane;
 
@@ -68,25 +69,30 @@ public class NewProjectDialog extends javax.swing.JDialog {
 
         jLabel1.setText("Contact:");
 
-        contactJTextField.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        contactJTextField.setHorizontalAlignment(javax.swing.JTextField.LEFT);
+        contactJTextField.setMargin(new java.awt.Insets(2, 4, 2, 2));
 
         jLabel2.setText("E-mail:");
 
-        eMailJTextField.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        eMailJTextField.setHorizontalAlignment(javax.swing.JTextField.LEFT);
+        eMailJTextField.setMargin(new java.awt.Insets(2, 4, 2, 2));
 
         jLabel3.setText("Phone:");
 
-        phoneJTextField.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        phoneJTextField.setHorizontalAlignment(javax.swing.JTextField.LEFT);
+        phoneJTextField.setMargin(new java.awt.Insets(2, 4, 2, 2));
 
         jLabel4.setText("Summary:");
 
-        summaryJTextField.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        summaryJTextField.setHorizontalAlignment(javax.swing.JTextField.LEFT);
+        summaryJTextField.setMargin(new java.awt.Insets(2, 4, 2, 2));
 
         jLabel5.setText("Description:");
 
         jLabel6.setText("Name:");
 
-        nameJTextField.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        nameJTextField.setHorizontalAlignment(javax.swing.JTextField.LEFT);
+        nameJTextField.setMargin(new java.awt.Insets(2, 4, 2, 2));
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -158,6 +164,11 @@ public class NewProjectDialog extends javax.swing.JDialog {
         okJButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 okJButtonActionPerformed(evt);
+            }
+        });
+        okJButton.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                okJButtonKeyReleased(evt);
             }
         });
 
@@ -233,6 +244,18 @@ public class NewProjectDialog extends javax.swing.JDialog {
             }
         }
     }//GEN-LAST:event_okJButtonActionPerformed
+
+    /**
+     * Creates the new project and then closes the dialog.
+     *
+     * @param evt
+     */
+    private void okJButtonKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_okJButtonKeyReleased
+        if(evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            okJButtonActionPerformed(null);
+        }
+    }//GEN-LAST:event_okJButtonKeyReleased
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancelJButton;
     private javax.swing.JTextField contactJTextField;

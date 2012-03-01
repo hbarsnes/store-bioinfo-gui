@@ -1,5 +1,6 @@
 package no.uib.storbioinfogui;
 
+import java.awt.event.KeyEvent;
 import no.uib.storbioinfogui.data.Dataset;
 import javax.swing.JOptionPane;
 
@@ -64,7 +65,8 @@ public class NewDatasetDialog extends javax.swing.JDialog {
 
         jLabel1.setText("Name:");
 
-        nameJTextField.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        nameJTextField.setHorizontalAlignment(javax.swing.JTextField.LEFT);
+        nameJTextField.setMargin(new java.awt.Insets(2, 4, 2, 2));
 
         jLabel5.setText("Description:");
 
@@ -110,6 +112,11 @@ public class NewDatasetDialog extends javax.swing.JDialog {
         okButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 okButtonActionPerformed(evt);
+            }
+        });
+        okButton.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                okButtonKeyReleased(evt);
             }
         });
 
@@ -177,6 +184,18 @@ public class NewDatasetDialog extends javax.swing.JDialog {
             }
         }
     }//GEN-LAST:event_okButtonActionPerformed
+
+    /**
+     * Creates the project and then closes the dialog.
+     *
+     * @param evt
+     */
+    private void okButtonKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_okButtonKeyReleased
+        if(evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            okButtonActionPerformed(null);
+        }
+    }//GEN-LAST:event_okButtonKeyReleased
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancelButton;
     private javax.swing.JPanel datasetDetailsPanel;
