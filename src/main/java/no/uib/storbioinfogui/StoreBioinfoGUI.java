@@ -1,4 +1,3 @@
-
 package no.uib.storbioinfogui;
 
 import no.uib.storbioinfogui.data.Project;
@@ -20,10 +19,10 @@ import javax.swing.table.DefaultTableModel;
 
 /**
  * The main GUI class. Also contains most of the methods.
- * 
+ *
  * @author Harald Barsnes
  */
-public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwner{
+public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwner {
 
     /**
      * The local StorBioinfo folder.
@@ -39,7 +38,7 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
      */
     public StoreBioinfoGUI() {
         initComponents();
-        
+
         // set the title of the frame and add the icon
         setTitle("StoreBioinfoGUI " + getVersion());
         setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/StoreBioinfo.png")));
@@ -55,7 +54,7 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
 
         projectsTable.setAutoCreateRowSorter(true);
         datasetsTable.setAutoCreateRowSorter(true);
-        
+
         // make sure that the scroll panes are see-through
         localProjectsScrollPane.getViewport().setOpaque(false);
         dataSetsJScrollPane.getViewport().setOpaque(false);
@@ -75,8 +74,8 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
                 System.exit(0);
             }
 
-            updateProjectsList(null); 
-            
+            updateProjectsList(null);
+
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -86,7 +85,7 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
 
     /**
      * Update the list of current projects.
-     * 
+     *
      * @param projectName the selected project name
      */
     private void updateProjectsList(String projectName) {
@@ -108,7 +107,7 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
         DefaultTableModel dm = (DefaultTableModel) projectsTable.getModel();
         dm.getDataVector().removeAllElements();
         dm.fireTableDataChanged();
-        
+
         datasetDescriptionTextArea.setText("");
         datasetsJLabel.setText("Datasets");
 
@@ -141,7 +140,7 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
         if (projectsTable.getRowCount() > 0) {
             projectsTable.setRowSelectionInterval(selectedRow, selectedRow);
             projectsTableMouseReleased(null);
-            
+
             addDatasetJButton.setEnabled(true);
         }
 
@@ -520,13 +519,13 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
 
     /**
      * Copies the current folder path to the clipboard.
-     * 
-     * @param evt 
+     *
+     * @param evt
      */
     private void copyJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_copyJButtonActionPerformed
 
         String selectedFolder = (String) datatypesJComboBox.getSelectedItem();
-        
+
         StringSelection stringSelection = new StringSelection(selectedFolder);
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         clipboard.setContents(stringSelection, this);
@@ -536,8 +535,8 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
 
     /**
      * Opens the current folder in a file browser.
-     * 
-     * @param evt 
+     *
+     * @param evt
      */
     private void openJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openJButtonActionPerformed
         String selectedFolder = (String) datatypesJComboBox.getSelectedItem();
@@ -551,8 +550,8 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
 
     /**
      * Add a new dataset.
-     * 
-     * @param evt 
+     *
+     * @param evt
      */
     private void addDatasetJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addDatasetJButtonActionPerformed
 
@@ -566,17 +565,17 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
 
     /**
      * Add a new project.
-     * 
-     * @param evt 
+     *
+     * @param evt
      */
     private void addProjectJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addProjectJButtonActionPerformed
         new NewProjectDialog(this, true);
     }//GEN-LAST:event_addProjectJButtonActionPerformed
-    
+
     /**
      * Updates the dataset display.
-     * 
-     * @param evt 
+     *
+     * @param evt
      */
     private void projectsTableMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_projectsTableMouseReleased
 
@@ -592,14 +591,14 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
             projectDetailsPanel.repaint();
 
             ArrayList<Dataset> datasets = getDatasets(tempProject);
-            updateDatasetTable(datasets);
+            updateDatasetTable(datasets, tempProject.getName());
         }
     }//GEN-LAST:event_projectsTableMouseReleased
 
     /**
      * Closes the tool.
-     * 
-     * @param evt 
+     *
+     * @param evt
      */
     private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitMenuItemActionPerformed
         System.exit(0);
@@ -614,37 +613,37 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
 
     /**
      * Updates the information displayed about the selected dataset.
-     * 
-     * @param evt 
+     *
+     * @param evt
      */
     private void datasetsTableMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_datasetsTableMouseReleased
-        
+
         int row = datasetsTable.getSelectedRow();
 
         if (row != -1) {
-            
+
             String projectName = (String) projectsTable.getValueAt(projectsTable.getSelectedRow(), 1);
             String datasetName = (String) datasetsTable.getValueAt(row, 1);
-            
+
             String datasetDescription = readDatasetDescription(projectName, datasetName);
             datasetDescriptionTextArea.setText(datasetDescription);
- 
+
             File projectFolder = new File(localFolder, projectName);
             File datasetFolder = new File(projectFolder, datasetName);
-            
+
             ArrayList<String> datasetTypes = getDatasetTypes();
             Vector<String> folders = new Vector<String>();
-            
-            for (int i=0; i<datasetTypes.size(); i++) {
+
+            for (int i = 0; i < datasetTypes.size(); i++) {
                 folders.add(new File(datasetFolder, datasetTypes.get(i)).getPath());
             }
- 
-            datatypesJComboBox.setModel(new DefaultComboBoxModel(folders));  
+
+            datatypesJComboBox.setModel(new DefaultComboBoxModel(folders));
             datatypesJComboBox.setEnabled(true);
             openJButton.setEnabled(true);
             copyJButton.setEnabled(true);
         } else {
-            datatypesJComboBox.setModel(new DefaultComboBoxModel());  
+            datatypesJComboBox.setModel(new DefaultComboBoxModel());
             datatypesJComboBox.setEnabled(false);
             openJButton.setEnabled(false);
             copyJButton.setEnabled(false);
@@ -652,7 +651,7 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
     }//GEN-LAST:event_datasetsTableMouseReleased
 
     /**
-     * @see #datasetsTableMouseReleased(java.awt.event.MouseEvent) 
+     * @see #datasetsTableMouseReleased(java.awt.event.MouseEvent)
      */
     private void datasetsTableKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_datasetsTableKeyReleased
         datasetsTableMouseReleased(null);
@@ -660,8 +659,8 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
 
     /**
      * Opens the about page.
-     * 
-     * @param evt 
+     *
+     * @param evt
      */
     private void aboutMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aboutMenuItemActionPerformed
         new HelpDialog(this, getClass().getResource("/helpFiles/AboutStoreBioinfoGUI.html"));
@@ -669,8 +668,8 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
 
     /**
      * Opens the help dialog.
-     * 
-     * @param evt 
+     *
+     * @param evt
      */
     private void helpMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_helpMenuItemActionPerformed
         new HelpDialog(this, getClass().getResource("/helpFiles/StoreBioinfoHelp.html"));
@@ -678,20 +677,67 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
 
     /**
      * Updates the dataset table.
-     * 
-     * @param datasets 
+     *
+     * @param datasets
+     * @param projectName  
      */
-    public void updateDatasetTable(ArrayList<Dataset> datasets) {
+    public void updateDatasetTable(ArrayList<Dataset> datasets, String projectName) {
 
-        DefaultTableModel dm = (DefaultTableModel) datasetsTable.getModel();
-        dm.getDataVector().removeAllElements();
-        dm.fireTableDataChanged();
+        ArrayList<String> datasetTypes = getDatasetTypes();
+
+        // reset the table model
+        datasetsTable.setModel(new javax.swing.table.DefaultTableModel(
+                new Object[][]{},
+                new String[]{
+                    " ", "Name", "Description"
+                }) {
+
+            Class[] types = new Class[]{
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean[]{
+                false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                
+                switch(columnIndex) {
+                    case 1:
+                        return java.lang.String.class;
+                    case 2:
+                        return java.lang.String.class;
+                    default:
+                        return java.lang.Integer.class;      
+                }
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return false;
+            }
+        });
+        
+        ((DefaultTableModel) datasetsTable.getModel()).fireTableDataChanged();
+        
+        datasetsTable.getColumn(" ").setMaxWidth(50);
+        datasetsTable.getColumn(" ").setMinWidth(50);
+        
+        // add the dataset type columns
+        for (int i = 0; i < datasetTypes.size(); i++) {
+            ((DefaultTableModel) datasetsTable.getModel()).addColumn(datasetTypes.get(i));
+        }
+        
+        // set the column widths for the dataset type columns
+        for (int i = 0; i < datasetTypes.size(); i++) {
+            datasetsTable.getColumn(datasetTypes.get(i)).setMinWidth(80);
+            datasetsTable.getColumn(datasetTypes.get(i)).setMaxWidth(80);
+        }
         
         datasetDescriptionTextArea.setText("");
         datasetsJLabel.setText("Datasets");
-        
+
         Collections.sort(datasets);
 
+        // add the datasets
         for (int i = 0; i < datasets.size(); i++) {
             ((DefaultTableModel) datasetsTable.getModel()).addRow(new Object[]{
                         (i + 1),
@@ -700,21 +746,32 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
                     });
         }
         
-        datatypesJComboBox.setModel(new DefaultComboBoxModel());  
+        // add the number of files of each dataset type
+        for (int i=0; i<datasetsTable.getRowCount();i++) {
+            
+            File datasetFolder = new File(new File(localFolder, projectName), datasets.get(i).getName());
+            
+            for (int j = 0; j < datasetTypes.size(); j++) {
+                File tempDataTypeFolder = new File(datasetFolder, datasetTypes.get(j)); 
+                datasetsTable.setValueAt(tempDataTypeFolder.listFiles().length, i, j+3);
+            } 
+        }
+        
+        datatypesJComboBox.setModel(new DefaultComboBoxModel());
         datatypesJComboBox.setEnabled(false);
         openJButton.setEnabled(false);
         copyJButton.setEnabled(false);
-        
-        if (datasetsTable.getRowCount() > 0) { 
+
+        if (datasetsTable.getRowCount() > 0) {
             datasetsJLabel.setText("Datasets (" + datasetsTable.getRowCount() + ")");
             datasetsTable.setRowSelectionInterval(0, 0);
             datasetsTableMouseReleased(null);
-        } 
+        }
     }
 
     /**
      * The main method used to start the tool.
-     * 
+     *
      * @param args the command line arguments
      */
     public static void main(String args[]) {
@@ -790,17 +847,17 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
 
     /**
      * Returns true if the project exists.
-     * 
+     *
      * @param projectName the project name
      * @return true if the project exists
      */
     public boolean projectExists(String projectName) {
         return new File(localFolder, projectName).exists();
     }
-    
+
     /**
      * Returns true if the dataset already exists.
-     * 
+     *
      * @param projectName the project name
      * @param datasetName the dataset name
      * @return true if the dataset already exists
@@ -808,12 +865,12 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
     public boolean datasetExists(String projectName, String datasetName) {
         File projectFolder = new File(localFolder, projectName);
         File datasetFolder = new File(projectFolder, datasetName);
-        return datasetFolder.exists(); 
+        return datasetFolder.exists();
     }
-    
+
     /**
      * Add a new project.
-     * 
+     *
      * @param project
      * @return true if the project was created without errors
      */
@@ -854,7 +911,7 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
 
     /**
      * Create the project meta data.
-     * 
+     *
      * @param project
      * @return the project meta data
      */
@@ -902,7 +959,7 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
 
     /**
      * Get all datasets for the given project.
-     * 
+     *
      * @param project
      * @return all datasets for the given project
      */
@@ -930,7 +987,7 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
 
     /**
      * Get the dataset description.
-     * 
+     *
      * @param projectName
      * @param datasetName
      * @return the dataset description
@@ -965,7 +1022,7 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
 
     /**
      * Read the project meta data.
-     * 
+     *
      * @param projectName
      * @return the project with the meta data included
      */
@@ -1016,7 +1073,7 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
 
     /**
      * Get the number of datasets.
-     * 
+     *
      * @param project
      * @return the number of datasets
      */
@@ -1045,7 +1102,7 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
 
     /**
      * Get the list of supported dataset types.
-     * 
+     *
      * @return the list of supported dataset types
      */
     public ArrayList<String> getDatasetTypes() {
@@ -1086,9 +1143,9 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
 
     /**
      * Add a dataset.
-     * 
+     *
      * @param projectName
-     * @param dataset 
+     * @param dataset
      */
     public void addDataset(String projectName, Dataset dataset) {
 
@@ -1128,34 +1185,34 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
                 JOptionPane.showMessageDialog(this, "Dataset \'" + dataset.getName() + "\' failed to create meta.xml!", "Dataset Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            
+
             // create the data folders
             created = new File(datasetFolder, "Raw").mkdir();
-            
+
             if (!created) {
                 JOptionPane.showMessageDialog(this, "Dataset \'" + dataset.getName() + "\' failed to create folder Raw!", "Dataset Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            
+
             created = new File(datasetFolder, "Processed").mkdir();
-            
+
             if (!created) {
                 JOptionPane.showMessageDialog(this, "Dataset \'" + dataset.getName() + "\' failed to create folder Processed!", "Dataset Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            
+
             created = new File(datasetFolder, "Results").mkdir();
-            
+
             if (!created) {
                 JOptionPane.showMessageDialog(this, "Dataset \'" + dataset.getName() + "\' failed to create folder Results!", "Dataset Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            
+
             updateProjectsList(projectName);
             projectsTableMouseReleased(null);
-            
+
             JOptionPane.showMessageDialog(this, "Dataset \'" + dataset.getName() + "\' created.", "Dataset Created", JOptionPane.INFORMATION_MESSAGE);
-            
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -1165,7 +1222,7 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
     public void lostOwnership(Clipboard clipboard, Transferable contents) {
         // do nothing
     }
-    
+
     /**
      * Retrieves the version number set in the pom file.
      *
