@@ -70,7 +70,7 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
             localFolder = new File(localFolderPath);
 
             if (!localFolder.exists()) {
-                JOptionPane.showMessageDialog(this, "Local folder \'" + localPathFile + "\' not found! Closing program.", "Folder Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Local folder \'" + localPathFile + "\' not found! Closing program.", "Folder Error", JOptionPane.ERROR_MESSAGE);
                 System.exit(0);
             }
 
@@ -679,7 +679,7 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
      * Updates the dataset table.
      *
      * @param datasets
-     * @param projectName  
+     * @param projectName
      */
     public void updateDatasetTable(ArrayList<Dataset> datasets, String projectName) {
 
@@ -700,14 +700,14 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
             };
 
             public Class getColumnClass(int columnIndex) {
-                
-                switch(columnIndex) {
+
+                switch (columnIndex) {
                     case 1:
                         return java.lang.String.class;
                     case 2:
                         return java.lang.String.class;
                     default:
-                        return java.lang.Integer.class;      
+                        return java.lang.Integer.class;
                 }
             }
 
@@ -715,23 +715,23 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
                 return false;
             }
         });
-        
+
         ((DefaultTableModel) datasetsTable.getModel()).fireTableDataChanged();
-        
-        datasetsTable.getColumn(" ").setMaxWidth(50);
-        datasetsTable.getColumn(" ").setMinWidth(50);
-        
+
         // add the dataset type columns
         for (int i = 0; i < datasetTypes.size(); i++) {
             ((DefaultTableModel) datasetsTable.getModel()).addColumn(datasetTypes.get(i));
         }
-        
+
         // set the column widths for the dataset type columns
         for (int i = 0; i < datasetTypes.size(); i++) {
             datasetsTable.getColumn(datasetTypes.get(i)).setMinWidth(80);
             datasetsTable.getColumn(datasetTypes.get(i)).setMaxWidth(80);
         }
-        
+
+        datasetsTable.getColumn(" ").setMaxWidth(50);
+        datasetsTable.getColumn(" ").setMinWidth(50);
+
         datasetDescriptionTextArea.setText("");
         datasetsJLabel.setText("Datasets");
 
@@ -745,18 +745,18 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
                         datasets.get(i).getDescription()
                     });
         }
-        
+
         // add the number of files of each dataset type
-        for (int i=0; i<datasetsTable.getRowCount();i++) {
-            
+        for (int i = 0; i < datasetsTable.getRowCount(); i++) {
+
             File datasetFolder = new File(new File(localFolder, projectName), datasets.get(i).getName());
-            
+
             for (int j = 0; j < datasetTypes.size(); j++) {
-                File tempDataTypeFolder = new File(datasetFolder, datasetTypes.get(j)); 
-                datasetsTable.setValueAt(tempDataTypeFolder.listFiles().length, i, j+3);
-            } 
+                File tempDataTypeFolder = new File(datasetFolder, datasetTypes.get(j));
+                datasetsTable.setValueAt(tempDataTypeFolder.listFiles().length, i, j + 3);
+            }
         }
-        
+
         datatypesJComboBox.setModel(new DefaultComboBoxModel());
         datatypesJComboBox.setEnabled(false);
         openJButton.setEnabled(false);
@@ -994,7 +994,7 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
      */
     private String readDatasetDescription(String projectName, String datasetName) {
 
-        String description = "";
+        String description;
 
         File projectFolder = new File(localFolder, projectName);
         File datasetFolder = new File(projectFolder, datasetName);
@@ -1110,7 +1110,7 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
         ArrayList<String> datasetTypes = new ArrayList<String>();
 
         File configFile = new File(getJarFilePath());
-        File datasetTypesFile = new File(configFile.getParentFile(), "config/dataset_types"); // @TODO: this has to be changed!!!
+        File datasetTypesFile = new File(configFile.getParentFile(), "config/dataset_types");
 
         if (!datasetTypesFile.exists()) {
             JOptionPane.showMessageDialog(this, "Dataset types file not found! Closing program.", "Folder Error", JOptionPane.ERROR_MESSAGE);
@@ -1187,27 +1187,19 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
             }
 
             // create the data folders
-            created = new File(datasetFolder, "Raw").mkdir();
+            ArrayList<String> datasetTypes = getDatasetTypes();
 
-            if (!created) {
-                JOptionPane.showMessageDialog(this, "Dataset \'" + dataset.getName() + "\' failed to create folder Raw!", "Dataset Error", JOptionPane.ERROR_MESSAGE);
-                return;
+            for (int i = 0; i < datasetTypes.size(); i++) {
+                String type= datasetTypes.get(i);
+                
+                created = new File(datasetFolder, type).mkdir();
+
+                if (!created) {
+                    JOptionPane.showMessageDialog(this, "Dataset \'" + dataset.getName() + "\' failed to create folder " + type + "!", "Dataset Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
             }
-
-            created = new File(datasetFolder, "Processed").mkdir();
-
-            if (!created) {
-                JOptionPane.showMessageDialog(this, "Dataset \'" + dataset.getName() + "\' failed to create folder Processed!", "Dataset Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-
-            created = new File(datasetFolder, "Results").mkdir();
-
-            if (!created) {
-                JOptionPane.showMessageDialog(this, "Dataset \'" + dataset.getName() + "\' failed to create folder Results!", "Dataset Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-
+            
             updateProjectsList(projectName);
             projectsTableMouseReleased(null);
 
