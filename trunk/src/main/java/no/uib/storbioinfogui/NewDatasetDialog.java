@@ -1,8 +1,12 @@
 package no.uib.storbioinfogui;
 
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import no.uib.storbioinfogui.data.Dataset;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import no.uib.storbioinfogui.data.DataFolder;
 
 /**
  * Dialog for creating a new Dataset.
@@ -11,8 +15,30 @@ import javax.swing.JOptionPane;
  */
 public class NewDatasetDialog extends javax.swing.JDialog {
 
+    /**
+     * Reference to the main GUI.
+     */
     private StoreBioinfoGUI storeBioinfoGUI;
+    /**
+     * The name of the project the dataset belongs to.
+     */
     private String projectName;
+    /**
+     * The name of the dataset currently being edited.
+     */
+    private String datasetName;
+    /**
+     * The dataset description.
+     */
+    private String description;
+    /**
+     * The list of data folders.
+     */
+    private ArrayList<DataFolder> dataFolders;
+    /**
+     * Set to true of editing a dataset, false otherwise.
+     */
+    private boolean editMode;
 
     /**
      * Creates a new NewProjectDialog.
@@ -26,11 +52,74 @@ public class NewDatasetDialog extends javax.swing.JDialog {
 
         this.storeBioinfoGUI = storeBioinfoGUI;
         this.projectName = projectName;
+        dataFolders = new ArrayList<DataFolder>();
+        editMode = false;
 
         initComponents();
+        setUpGui();
 
         setLocationRelativeTo(storeBioinfoGUI);
         setVisible(true);
+    }
+
+    /**
+     * Creates a new NewProjectDialog with details about the given dataset.
+     *
+     * @param storeBioinfoGUI
+     * @param dataset
+     * @param modal
+     */
+    public NewDatasetDialog(StoreBioinfoGUI storeBioinfoGUI, Dataset dataset, boolean modal) {
+        super(storeBioinfoGUI, modal);
+
+        this.storeBioinfoGUI = storeBioinfoGUI;
+        this.projectName = dataset.getProjectName();
+        this.datasetName = dataset.getName();
+        this.description = dataset.getDescription();
+        dataFolders = dataset.getDataFolders();
+        editMode = true;
+
+        initComponents();
+        setUpGui();
+        validateInput();
+
+        setLocationRelativeTo(storeBioinfoGUI);
+        setVisible(true);
+    }
+
+    /**
+     * Set up the GUI.
+     */
+    private void setUpGui() {
+        dataFoldersJTable.getTableHeader().setReorderingAllowed(false);
+        dataFoldersJTable.setAutoCreateRowSorter(true);
+        dataFoldersJScrollPane.getViewport().setOpaque(false);
+
+        // the index column
+        dataFoldersJTable.getColumn(" ").setMaxWidth(50);
+        dataFoldersJTable.getColumn(" ").setMinWidth(50);
+
+        if (editMode) {
+            nameJTextField.setText(datasetName);
+            descriptionTextArea.setText(description);
+
+            for (int i = 0; i < dataFolders.size(); i++) {
+                ((DefaultTableModel) dataFoldersJTable.getModel()).addRow(new Object[]{
+                            (i + 1),
+                            dataFolders.get(i).getDataType(),
+                            dataFolders.get(i).getFolderPath()
+                });
+            }
+        }
+    }
+
+    /**
+     * Returns a reference to the main GUI.
+     *
+     * @return a reference to the main GUI
+     */
+    public StoreBioinfoGUI getStoreBioinfoGUI() {
+        return storeBioinfoGUI;
     }
 
     /**
@@ -42,62 +131,68 @@ public class NewDatasetDialog extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        datafoldersJPopupMenu = new javax.swing.JPopupMenu();
+        addMenuItem = new javax.swing.JMenuItem();
+        removeMenuItem = new javax.swing.JMenuItem();
         datasetDetailsPanel = new javax.swing.JPanel();
-        descriptionJScrollPane = new javax.swing.JScrollPane();
-        descriptionTextArea = new javax.swing.JTextArea();
-        jLabel1 = new javax.swing.JLabel();
         nameJTextField = new javax.swing.JTextField();
-        jLabel5 = new javax.swing.JLabel();
         cancelButton = new javax.swing.JButton();
         okButton = new javax.swing.JButton();
+        dataFoldersPanel = new javax.swing.JPanel();
+        dataFoldersJScrollPane = new javax.swing.JScrollPane();
+        dataFoldersJTable = new javax.swing.JTable();
+        rightClickLabel = new javax.swing.JLabel();
+        descriptionPanel = new javax.swing.JPanel();
+        descriptionJScrollPane = new javax.swing.JScrollPane();
+        descriptionTextArea = new javax.swing.JTextArea();
+        mandatoryLabel = new javax.swing.JLabel();
+
+        addMenuItem.setText("Add Data Folder");
+        addMenuItem.setToolTipText("Add a new data folder to the table");
+        addMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addMenuItemActionPerformed(evt);
+            }
+        });
+        datafoldersJPopupMenu.add(addMenuItem);
+
+        removeMenuItem.setText("Remove Data Folder");
+        removeMenuItem.setToolTipText("Remove the selected data folder from the table");
+        removeMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                removeMenuItemActionPerformed(evt);
+            }
+        });
+        datafoldersJPopupMenu.add(removeMenuItem);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("New Dataset");
         setResizable(false);
 
-        datasetDetailsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Dataset Details"));
-
-        descriptionTextArea.setColumns(10);
-        descriptionTextArea.setLineWrap(true);
-        descriptionTextArea.setRows(3);
-        descriptionTextArea.setWrapStyleWord(true);
-        descriptionJScrollPane.setViewportView(descriptionTextArea);
-
-        jLabel1.setText("Name:");
+        datasetDetailsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Name*"));
 
         nameJTextField.setHorizontalAlignment(javax.swing.JTextField.LEFT);
         nameJTextField.setMargin(new java.awt.Insets(2, 4, 2, 2));
-
-        jLabel5.setText("Description:");
+        nameJTextField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                nameJTextFieldKeyReleased(evt);
+            }
+        });
 
         javax.swing.GroupLayout datasetDetailsPanelLayout = new javax.swing.GroupLayout(datasetDetailsPanel);
         datasetDetailsPanel.setLayout(datasetDetailsPanelLayout);
         datasetDetailsPanelLayout.setHorizontalGroup(
             datasetDetailsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(datasetDetailsPanelLayout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, datasetDetailsPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(datasetDetailsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1)
-                    .addComponent(jLabel5))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(datasetDetailsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(descriptionJScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 537, Short.MAX_VALUE)
-                    .addComponent(nameJTextField))
+                .addComponent(nameJTextField)
                 .addContainerGap())
         );
         datasetDetailsPanelLayout.setVerticalGroup(
             datasetDetailsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(datasetDetailsPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(datasetDetailsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(nameJTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(datasetDetailsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(descriptionJScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(datasetDetailsPanelLayout.createSequentialGroup()
-                        .addGap(28, 28, 28)
-                        .addComponent(jLabel5)))
+                .addComponent(nameJTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -109,6 +204,7 @@ public class NewDatasetDialog extends javax.swing.JDialog {
         });
 
         okButton.setText("OK");
+        okButton.setEnabled(false);
         okButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 okButtonActionPerformed(evt);
@@ -120,19 +216,122 @@ public class NewDatasetDialog extends javax.swing.JDialog {
             }
         });
 
+        dataFoldersPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Data Folders"));
+
+        dataFoldersJScrollPane.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                dataFoldersJScrollPaneMouseClicked(evt);
+            }
+        });
+
+        dataFoldersJTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                " ", "Type", "Folder"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        dataFoldersJTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        dataFoldersJTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                dataFoldersJTableMouseClicked(evt);
+            }
+        });
+        dataFoldersJScrollPane.setViewportView(dataFoldersJTable);
+
+        rightClickLabel.setFont(rightClickLabel.getFont().deriveFont((rightClickLabel.getFont().getStyle() | java.awt.Font.ITALIC)));
+        rightClickLabel.setText("Right click in the table to add or delete a data folder.");
+
+        javax.swing.GroupLayout dataFoldersPanelLayout = new javax.swing.GroupLayout(dataFoldersPanel);
+        dataFoldersPanel.setLayout(dataFoldersPanelLayout);
+        dataFoldersPanelLayout.setHorizontalGroup(
+            dataFoldersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(dataFoldersPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(dataFoldersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(dataFoldersPanelLayout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addComponent(rightClickLabel)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(dataFoldersJScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 612, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        dataFoldersPanelLayout.setVerticalGroup(
+            dataFoldersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(dataFoldersPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(dataFoldersJScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 15, Short.MAX_VALUE)
+                .addComponent(rightClickLabel)
+                .addContainerGap())
+        );
+
+        descriptionPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Description*"));
+
+        descriptionTextArea.setColumns(10);
+        descriptionTextArea.setLineWrap(true);
+        descriptionTextArea.setRows(3);
+        descriptionTextArea.setWrapStyleWord(true);
+        descriptionTextArea.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                descriptionTextAreaKeyReleased(evt);
+            }
+        });
+        descriptionJScrollPane.setViewportView(descriptionTextArea);
+
+        javax.swing.GroupLayout descriptionPanelLayout = new javax.swing.GroupLayout(descriptionPanel);
+        descriptionPanel.setLayout(descriptionPanelLayout);
+        descriptionPanelLayout.setHorizontalGroup(
+            descriptionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(descriptionPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(descriptionJScrollPane)
+                .addContainerGap())
+        );
+        descriptionPanelLayout.setVerticalGroup(
+            descriptionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(descriptionPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(descriptionJScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        mandatoryLabel.setFont(mandatoryLabel.getFont().deriveFont((mandatoryLabel.getFont().getStyle() | java.awt.Font.ITALIC)));
+        mandatoryLabel.setText("* Mandatory fields.");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(datasetDetailsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 508, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(datasetDetailsPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addComponent(mandatoryLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(okButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cancelButton)))
+                        .addComponent(cancelButton))
+                    .addComponent(dataFoldersPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(descriptionPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -144,9 +343,14 @@ public class NewDatasetDialog extends javax.swing.JDialog {
                 .addContainerGap()
                 .addComponent(datasetDetailsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(descriptionPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(dataFoldersPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cancelButton)
-                    .addComponent(okButton))
+                    .addComponent(okButton)
+                    .addComponent(mandatoryLabel))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -175,11 +379,18 @@ public class NewDatasetDialog extends javax.swing.JDialog {
         } else {
 
             // check if dataset already exists
-            if (storeBioinfoGUI.datasetExists(projectName, nameJTextField.getText())) {
+            if (!editMode && storeBioinfoGUI.datasetExists(projectName, nameJTextField.getText())) {
                 JOptionPane.showMessageDialog(this, "Dataset \'" + nameJTextField.getText() + "\' already exists!", "Dataset Error", JOptionPane.ERROR_MESSAGE);
             } else {
                 this.setVisible(false);
-                storeBioinfoGUI.addDataset(projectName, new Dataset(nameJTextField.getText(), descriptionTextArea.getText()));
+
+                dataFolders = new ArrayList<DataFolder>();
+
+                for (int i = 0; i < dataFoldersJTable.getRowCount(); i++) {
+                    dataFolders.add(new DataFolder((String) dataFoldersJTable.getValueAt(i, 1), (String) dataFoldersJTable.getValueAt(i, 2)));
+                }
+
+                storeBioinfoGUI.addDataset(projectName, new Dataset(nameJTextField.getText(), descriptionTextArea.getText(), projectName, dataFolders));
                 this.dispose();
             }
         }
@@ -191,19 +402,148 @@ public class NewDatasetDialog extends javax.swing.JDialog {
      * @param evt
      */
     private void okButtonKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_okButtonKeyReleased
-        if(evt.getKeyCode() == KeyEvent.VK_ENTER) {
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             okButtonActionPerformed(null);
         }
     }//GEN-LAST:event_okButtonKeyReleased
 
+    /**
+     * Show the add/remove pop up menu.
+     *
+     * @param evt
+     */
+    private void dataFoldersJTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_dataFoldersJTableMouseClicked
+
+        if (evt.getClickCount() == 1 && evt.getButton() == MouseEvent.BUTTON3) {
+
+            if (dataFoldersJTable.rowAtPoint(evt.getPoint()) != -1) {
+                dataFoldersJTable.setRowSelectionInterval(dataFoldersJTable.rowAtPoint(evt.getPoint()), dataFoldersJTable.rowAtPoint(evt.getPoint()));
+            }
+
+            datafoldersJPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
+        }
+    }//GEN-LAST:event_dataFoldersJTableMouseClicked
+
+    /**
+     * Add a new data folder via the the AddDataFolderDialog.
+     *
+     * @param evt
+     */
+    private void addMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addMenuItemActionPerformed
+
+        String[] datasetTypes = new String[storeBioinfoGUI.getDatasetTypes().size()];
+
+        for (int i = 0; i < storeBioinfoGUI.getDatasetTypes().size(); i++) {
+            datasetTypes[i] = storeBioinfoGUI.getDatasetTypes().get(i);
+        }
+
+        storeBioinfoGUI.getDatasetTypes();
+
+        new NewDataFolderDialog(this, datasetTypes, true);
+    }//GEN-LAST:event_addMenuItemActionPerformed
+
+    /**
+     * Remove the selected folder from the table.
+     *
+     * @param evt
+     */
+    private void removeMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeMenuItemActionPerformed
+        if (dataFoldersJTable.getSelectedRow() != -1) {
+            ((DefaultTableModel) dataFoldersJTable.getModel()).removeRow(dataFoldersJTable.getSelectedRow());
+
+            // correct the indexes
+            for (int i = 0; i < dataFoldersJTable.getRowCount(); i++) {
+                dataFoldersJTable.setValueAt((i + 1), i, 0);
+            }
+        }
+    }//GEN-LAST:event_removeMenuItemActionPerformed
+
+    /**
+     * Show the add/remove pop up menu.
+     *
+     * @param evt
+     */
+    private void dataFoldersJScrollPaneMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_dataFoldersJScrollPaneMouseClicked
+        dataFoldersJTableMouseClicked(evt);
+    }//GEN-LAST:event_dataFoldersJScrollPaneMouseClicked
+
+    /**
+     * Validate the input.
+     *
+     * @param evt
+     */
+    private void nameJTextFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_nameJTextFieldKeyReleased
+        validateInput();
+    }//GEN-LAST:event_nameJTextFieldKeyReleased
+
+    /**
+     * Validate the input.
+     *
+     * @param evt
+     */
+    private void descriptionTextAreaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_descriptionTextAreaKeyReleased
+        validateInput();
+    }//GEN-LAST:event_descriptionTextAreaKeyReleased
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuItem addMenuItem;
     private javax.swing.JButton cancelButton;
+    private javax.swing.JScrollPane dataFoldersJScrollPane;
+    private javax.swing.JTable dataFoldersJTable;
+    private javax.swing.JPanel dataFoldersPanel;
+    private javax.swing.JPopupMenu datafoldersJPopupMenu;
     private javax.swing.JPanel datasetDetailsPanel;
     private javax.swing.JScrollPane descriptionJScrollPane;
+    private javax.swing.JPanel descriptionPanel;
     private javax.swing.JTextArea descriptionTextArea;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel mandatoryLabel;
     private javax.swing.JTextField nameJTextField;
     private javax.swing.JButton okButton;
+    private javax.swing.JMenuItem removeMenuItem;
+    private javax.swing.JLabel rightClickLabel;
     // End of variables declaration//GEN-END:variables
+
+    /**
+     * Insert the given data folder into the table.
+     *
+     * @param folderPath
+     * @param datasetType
+     */
+    public void insertDataFolder(String folderPath, String datasetType) {
+        ((DefaultTableModel) dataFoldersJTable.getModel()).addRow(new Object[]{
+                    dataFoldersJTable.getRowCount() + 1,
+                    datasetType,
+                    folderPath
+                });
+    }
+
+    /**
+     * Enable/disable the OK button.
+     */
+    private void validateInput() {
+        if (nameJTextField.getText().length() > 0
+                && descriptionTextArea.getText().length() > 0) {
+            okButton.setEnabled(true);
+        } else {
+            okButton.setEnabled(false);
+        }
+    }
+
+    /**
+     * Returns the dataset description.
+     *
+     * @return the description
+     */
+    public String getDescription() {
+        return description;
+    }
+
+    /**
+     * Set the dataset description.
+     *
+     * @param description the description to set
+     */
+    public void setDescription(String description) {
+        this.description = description;
+        descriptionTextArea.setText(description);
+    }
 }
