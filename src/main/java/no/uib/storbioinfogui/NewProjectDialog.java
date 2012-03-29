@@ -38,82 +38,113 @@ public class NewProjectDialog extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel3 = new javax.swing.JPanel();
-        jScrollPane2 = new javax.swing.JScrollPane();
+        projectDetailsPanel = new javax.swing.JPanel();
+        descriptionJScrollPane = new javax.swing.JScrollPane();
         descriptionJTextArea = new javax.swing.JTextArea();
-        jLabel1 = new javax.swing.JLabel();
+        contactLabel = new javax.swing.JLabel();
         contactJTextField = new javax.swing.JTextField();
-        jLabel2 = new javax.swing.JLabel();
+        eMailLabel = new javax.swing.JLabel();
         eMailJTextField = new javax.swing.JTextField();
-        jLabel3 = new javax.swing.JLabel();
+        phoneLabel = new javax.swing.JLabel();
         phoneJTextField = new javax.swing.JTextField();
-        jLabel4 = new javax.swing.JLabel();
+        summaryLabel = new javax.swing.JLabel();
         summaryJTextField = new javax.swing.JTextField();
-        jLabel5 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
+        descriptionLabel = new javax.swing.JLabel();
+        nameLabel = new javax.swing.JLabel();
         nameJTextField = new javax.swing.JTextField();
         cancelJButton = new javax.swing.JButton();
         okJButton = new javax.swing.JButton();
+        mandatoryLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("New Project");
         setResizable(false);
 
-        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Project Details"));
+        projectDetailsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Project Details"));
 
         descriptionJTextArea.setColumns(5);
         descriptionJTextArea.setLineWrap(true);
         descriptionJTextArea.setRows(3);
         descriptionJTextArea.setWrapStyleWord(true);
-        jScrollPane2.setViewportView(descriptionJTextArea);
+        descriptionJTextArea.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                descriptionJTextAreaKeyReleased(evt);
+            }
+        });
+        descriptionJScrollPane.setViewportView(descriptionJTextArea);
 
-        jLabel1.setText("Contact:");
+        contactLabel.setText("Contact*");
 
         contactJTextField.setHorizontalAlignment(javax.swing.JTextField.LEFT);
         contactJTextField.setMargin(new java.awt.Insets(2, 4, 2, 2));
+        contactJTextField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                contactJTextFieldKeyReleased(evt);
+            }
+        });
 
-        jLabel2.setText("E-mail:");
+        eMailLabel.setText("E-mail*");
 
         eMailJTextField.setHorizontalAlignment(javax.swing.JTextField.LEFT);
         eMailJTextField.setMargin(new java.awt.Insets(2, 4, 2, 2));
+        eMailJTextField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                eMailJTextFieldKeyReleased(evt);
+            }
+        });
 
-        jLabel3.setText("Phone:");
+        phoneLabel.setText("Phone*");
 
         phoneJTextField.setHorizontalAlignment(javax.swing.JTextField.LEFT);
         phoneJTextField.setMargin(new java.awt.Insets(2, 4, 2, 2));
+        phoneJTextField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                phoneJTextFieldKeyReleased(evt);
+            }
+        });
 
-        jLabel4.setText("Summary:");
+        summaryLabel.setText("Summary*");
 
         summaryJTextField.setHorizontalAlignment(javax.swing.JTextField.LEFT);
         summaryJTextField.setMargin(new java.awt.Insets(2, 4, 2, 2));
+        summaryJTextField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                summaryJTextFieldKeyReleased(evt);
+            }
+        });
 
-        jLabel5.setText("Description:");
+        descriptionLabel.setText("Description*");
 
-        jLabel6.setText("Name:");
+        nameLabel.setText("Name*");
 
         nameJTextField.setHorizontalAlignment(javax.swing.JTextField.LEFT);
         nameJTextField.setMargin(new java.awt.Insets(2, 4, 2, 2));
+        nameJTextField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                nameJTextFieldKeyReleased(evt);
+            }
+        });
 
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
+        javax.swing.GroupLayout projectDetailsPanelLayout = new javax.swing.GroupLayout(projectDetailsPanel);
+        projectDetailsPanel.setLayout(projectDetailsPanelLayout);
+        projectDetailsPanelLayout.setHorizontalGroup(
+            projectDetailsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(projectDetailsPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jLabel5)
+                .addGroup(projectDetailsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(projectDetailsPanelLayout.createSequentialGroup()
+                        .addComponent(descriptionLabel)
                         .addGap(28, 28, 28)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 527, Short.MAX_VALUE))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1)
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel4)
-                            .addComponent(jLabel6))
+                        .addComponent(descriptionJScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 525, Short.MAX_VALUE))
+                    .addGroup(projectDetailsPanelLayout.createSequentialGroup()
+                        .addGroup(projectDetailsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(contactLabel)
+                            .addComponent(eMailLabel)
+                            .addComponent(phoneLabel)
+                            .addComponent(summaryLabel)
+                            .addComponent(nameLabel))
                         .addGap(37, 37, 37)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(projectDetailsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(nameJTextField)
                             .addComponent(eMailJTextField, javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(phoneJTextField, javax.swing.GroupLayout.Alignment.TRAILING)
@@ -121,35 +152,35 @@ public class NewProjectDialog extends javax.swing.JDialog {
                             .addComponent(contactJTextField))))
                 .addContainerGap())
         );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
+        projectDetailsPanelLayout.setVerticalGroup(
+            projectDetailsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(projectDetailsPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel6)
+                .addGroup(projectDetailsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(nameLabel)
                     .addComponent(nameJTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
+                .addGroup(projectDetailsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(contactLabel)
                     .addComponent(contactJTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
+                .addGroup(projectDetailsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(eMailLabel)
                     .addComponent(eMailJTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
+                .addGroup(projectDetailsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(phoneLabel)
                     .addComponent(phoneJTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4)
+                .addGroup(projectDetailsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(summaryLabel)
                     .addComponent(summaryJTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGroup(projectDetailsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(descriptionJScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(projectDetailsPanelLayout.createSequentialGroup()
                         .addGap(29, 29, 29)
-                        .addComponent(jLabel5)))
+                        .addComponent(descriptionLabel)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -161,6 +192,7 @@ public class NewProjectDialog extends javax.swing.JDialog {
         });
 
         okJButton.setText("OK");
+        okJButton.setEnabled(false);
         okJButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 okJButtonActionPerformed(evt);
@@ -172,6 +204,9 @@ public class NewProjectDialog extends javax.swing.JDialog {
             }
         });
 
+        mandatoryLabel.setFont(mandatoryLabel.getFont().deriveFont((mandatoryLabel.getFont().getStyle() | java.awt.Font.ITALIC)));
+        mandatoryLabel.setText("* Mandatory fields.");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -179,9 +214,11 @@ public class NewProjectDialog extends javax.swing.JDialog {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(projectDetailsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGap(10, 10, 10)
+                        .addComponent(mandatoryLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(okJButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(cancelJButton)))
@@ -194,11 +231,12 @@ public class NewProjectDialog extends javax.swing.JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(projectDetailsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cancelJButton)
-                    .addComponent(okJButton))
+                    .addComponent(okJButton)
+                    .addComponent(mandatoryLabel))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -256,22 +294,93 @@ public class NewProjectDialog extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_okJButtonKeyReleased
 
+    /**
+     * Validate the input.
+     * 
+     * @param evt 
+     */
+    private void nameJTextFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_nameJTextFieldKeyReleased
+        validateInput();
+    }//GEN-LAST:event_nameJTextFieldKeyReleased
+
+    /**
+     * Validate the input.
+     * 
+     * @param evt 
+     */
+    private void contactJTextFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_contactJTextFieldKeyReleased
+        validateInput();
+    }//GEN-LAST:event_contactJTextFieldKeyReleased
+
+    /**
+     * Validate the input.
+     * 
+     * @param evt 
+     */
+    private void eMailJTextFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_eMailJTextFieldKeyReleased
+        validateInput();
+    }//GEN-LAST:event_eMailJTextFieldKeyReleased
+
+    /**
+     * Validate the input.
+     * 
+     * @param evt 
+     */
+    private void phoneJTextFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_phoneJTextFieldKeyReleased
+        validateInput();
+    }//GEN-LAST:event_phoneJTextFieldKeyReleased
+
+    /**
+     * Validate the input.
+     * 
+     * @param evt 
+     */
+    private void summaryJTextFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_summaryJTextFieldKeyReleased
+        validateInput();
+    }//GEN-LAST:event_summaryJTextFieldKeyReleased
+
+    /**
+     * Validate the input.
+     * 
+     * @param evt 
+     */
+    private void descriptionJTextAreaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_descriptionJTextAreaKeyReleased
+        validateInput();
+    }//GEN-LAST:event_descriptionJTextAreaKeyReleased
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancelJButton;
     private javax.swing.JTextField contactJTextField;
+    private javax.swing.JLabel contactLabel;
+    private javax.swing.JScrollPane descriptionJScrollPane;
     private javax.swing.JTextArea descriptionJTextArea;
+    private javax.swing.JLabel descriptionLabel;
     private javax.swing.JTextField eMailJTextField;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JLabel eMailLabel;
+    private javax.swing.JLabel mandatoryLabel;
     private javax.swing.JTextField nameJTextField;
+    private javax.swing.JLabel nameLabel;
     private javax.swing.JButton okJButton;
     private javax.swing.JTextField phoneJTextField;
+    private javax.swing.JLabel phoneLabel;
+    private javax.swing.JPanel projectDetailsPanel;
     private javax.swing.JTextField summaryJTextField;
+    private javax.swing.JLabel summaryLabel;
     // End of variables declaration//GEN-END:variables
+
+    /**
+     * Enable/disable the OK button.
+     */
+    private void validateInput() {
+        if (nameJTextField.getText().length() > 0 
+                && contactJTextField.getText().length() > 0
+                && eMailJTextField.getText().length() > 0
+                && phoneJTextField.getText().length() > 0
+                && summaryJTextField.getText().length() > 0
+                && descriptionJTextArea.getText().length() > 0) {
+            okJButton.setEnabled(true);
+        } else {
+            okJButton.setEnabled(false);
+        }
+    }
 }

@@ -16,6 +16,8 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
+import no.uib.storbioinfogui.data.DataFolder;
+import org.apache.commons.io.FileUtils;
 
 /**
  * The main GUI class. Also contains most of the methods.
@@ -32,6 +34,10 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
      * The list of all projets.
      */
     private HashMap<String, File> allFiles;
+    /**
+     * The last selected folder.
+     */
+    private String lastSelectedFolder = "user.home";
 
     /**
      * Creates a new StoreBioinfoGUI frame.
@@ -181,23 +187,26 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
         localProjectsScrollPane = new javax.swing.JScrollPane();
         projectsTable = new javax.swing.JTable();
         addProjectJButton = new javax.swing.JButton();
+        removeProjectButton = new javax.swing.JButton();
         projectDetailsPanel = new javax.swing.JPanel();
         projectDescriptionScrollPane = new javax.swing.JScrollPane();
         projectDescriptionTextArea = new javax.swing.JTextArea();
-        jLabel4 = new javax.swing.JLabel();
+        summaryLabel = new javax.swing.JLabel();
         projectSummaryJTextField = new javax.swing.JTextField();
-        jLabel5 = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
+        projectDescriptionLabel = new javax.swing.JLabel();
+        foldersLabel = new javax.swing.JLabel();
         datatypesJComboBox = new javax.swing.JComboBox();
         copyJButton = new javax.swing.JButton();
         dataSetsJScrollPane = new javax.swing.JScrollPane();
         datasetsTable = new javax.swing.JTable();
-        jLabel8 = new javax.swing.JLabel();
+        datasetDescriptionLabel = new javax.swing.JLabel();
         datasetDescriptionJScrollPane = new javax.swing.JScrollPane();
         datasetDescriptionTextArea = new javax.swing.JTextArea();
         datasetsJLabel = new javax.swing.JLabel();
         addDatasetJButton = new javax.swing.JButton();
         openJButton = new javax.swing.JButton();
+        editDatasetJButton = new javax.swing.JButton();
+        removeDatasetJButton = new javax.swing.JButton();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         exitMenuItem = new javax.swing.JMenuItem();
@@ -251,7 +260,7 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
         });
         localProjectsScrollPane.setViewportView(projectsTable);
 
-        addProjectJButton.setText("Add Project");
+        addProjectJButton.setText("Add");
         addProjectJButton.setToolTipText("Add a new project");
         addProjectJButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -259,26 +268,42 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
             }
         });
 
+        removeProjectButton.setText("Remove");
+        removeProjectButton.setToolTipText("Remove the selected project");
+        removeProjectButton.setEnabled(false);
+        removeProjectButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                removeProjectButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout localProjectsPanelLayout = new javax.swing.GroupLayout(localProjectsPanel);
         localProjectsPanel.setLayout(localProjectsPanelLayout);
         localProjectsPanelLayout.setHorizontalGroup(
             localProjectsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, localProjectsPanelLayout.createSequentialGroup()
+            .addGroup(localProjectsPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(localProjectsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(localProjectsScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 833, Short.MAX_VALUE)
-                    .addGroup(localProjectsPanelLayout.createSequentialGroup()
+                .addGroup(localProjectsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(localProjectsScrollPane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 833, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, localProjectsPanelLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(addProjectJButton, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(addProjectJButton, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(removeProjectButton, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
+
+        localProjectsPanelLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {addProjectJButton, removeProjectButton});
+
         localProjectsPanelLayout.setVerticalGroup(
             localProjectsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(localProjectsPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(localProjectsScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(addProjectJButton)
+                .addGroup(localProjectsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(addProjectJButton)
+                    .addComponent(removeProjectButton))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -291,15 +316,15 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
         projectDescriptionTextArea.setWrapStyleWord(true);
         projectDescriptionScrollPane.setViewportView(projectDescriptionTextArea);
 
-        jLabel4.setText("Summary:");
+        summaryLabel.setText("Summary:");
 
         projectSummaryJTextField.setEditable(false);
         projectSummaryJTextField.setHorizontalAlignment(javax.swing.JTextField.LEFT);
         projectSummaryJTextField.setMargin(new java.awt.Insets(2, 4, 2, 2));
 
-        jLabel5.setText("Project Description");
+        projectDescriptionLabel.setText("Project Description");
 
-        jLabel7.setText("Folders:");
+        foldersLabel.setText("Folders:");
 
         datatypesJComboBox.setEnabled(false);
 
@@ -335,7 +360,11 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
                 return canEdit [columnIndex];
             }
         });
+        datasetsTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         datasetsTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                datasetsTableMouseClicked(evt);
+            }
             public void mouseReleased(java.awt.event.MouseEvent evt) {
                 datasetsTableMouseReleased(evt);
             }
@@ -347,7 +376,7 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
         });
         dataSetsJScrollPane.setViewportView(datasetsTable);
 
-        jLabel8.setText("Dataset Description");
+        datasetDescriptionLabel.setText("Dataset Description");
 
         datasetDescriptionTextArea.setColumns(20);
         datasetDescriptionTextArea.setEditable(false);
@@ -357,7 +386,7 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
 
         datasetsJLabel.setText("Datasets");
 
-        addDatasetJButton.setText("Add Dataset");
+        addDatasetJButton.setText("Add");
         addDatasetJButton.setToolTipText("Add a new dataset to the selected project");
         addDatasetJButton.setEnabled(false);
         addDatasetJButton.addActionListener(new java.awt.event.ActionListener() {
@@ -375,6 +404,24 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
             }
         });
 
+        editDatasetJButton.setText("Edit");
+        editDatasetJButton.setToolTipText("Edit the selected dataset");
+        editDatasetJButton.setEnabled(false);
+        editDatasetJButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editDatasetJButtonActionPerformed(evt);
+            }
+        });
+
+        removeDatasetJButton.setText("Remove");
+        removeDatasetJButton.setToolTipText("Remove the selected dataset");
+        removeDatasetJButton.setEnabled(false);
+        removeDatasetJButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                removeDatasetJButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout projectDetailsPanelLayout = new javax.swing.GroupLayout(projectDetailsPanel);
         projectDetailsPanel.setLayout(projectDetailsPanelLayout);
         projectDetailsPanelLayout.setHorizontalGroup(
@@ -383,43 +430,49 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
                 .addContainerGap()
                 .addGroup(projectDetailsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(projectDetailsPanelLayout.createSequentialGroup()
-                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(summaryLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(projectSummaryJTextField))
-                    .addComponent(dataSetsJScrollPane, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(dataSetsJScrollPane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 833, Short.MAX_VALUE)
                     .addGroup(projectDetailsPanelLayout.createSequentialGroup()
-                        .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(foldersLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(datatypesJComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(openJButton, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(openJButton, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(copyJButton, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(copyJButton, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, projectDetailsPanelLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(addDatasetJButton, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(addDatasetJButton, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(editDatasetJButton, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(removeDatasetJButton, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(projectDescriptionScrollPane)
                     .addComponent(datasetDescriptionJScrollPane, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(projectDetailsPanelLayout.createSequentialGroup()
                         .addGroup(projectDetailsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel5)
+                            .addComponent(projectDescriptionLabel)
                             .addComponent(datasetsJLabel)
-                            .addComponent(jLabel8))
+                            .addComponent(datasetDescriptionLabel))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
         projectDetailsPanelLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {copyJButton, openJButton});
 
+        projectDetailsPanelLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {addDatasetJButton, editDatasetJButton, removeDatasetJButton});
+
         projectDetailsPanelLayout.setVerticalGroup(
             projectDetailsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(projectDetailsPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(projectDetailsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4)
+                    .addComponent(summaryLabel)
                     .addComponent(projectSummaryJTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addComponent(jLabel5)
+                .addComponent(projectDescriptionLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(projectDescriptionScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(29, 29, 29)
@@ -427,16 +480,19 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(dataSetsJScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(addDatasetJButton)
+                .addGroup(projectDetailsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(addDatasetJButton)
+                    .addComponent(editDatasetJButton)
+                    .addComponent(removeDatasetJButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel8)
+                .addComponent(datasetDescriptionLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(datasetDescriptionJScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(projectDetailsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(datatypesJComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(copyJButton)
-                    .addComponent(jLabel7)
+                    .addComponent(foldersLabel)
                     .addComponent(openJButton))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -524,9 +580,9 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
      */
     private void copyJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_copyJButtonActionPerformed
 
-        String selectedFolder = (String) datatypesJComboBox.getSelectedItem();
+        DataFolder selectedFolder = (DataFolder) datatypesJComboBox.getSelectedItem();
 
-        StringSelection stringSelection = new StringSelection(selectedFolder);
+        StringSelection stringSelection = new StringSelection(selectedFolder.getFolderPath());
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         clipboard.setContents(stringSelection, this);
 
@@ -539,10 +595,10 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
      * @param evt
      */
     private void openJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openJButtonActionPerformed
-        String selectedFolder = (String) datatypesJComboBox.getSelectedItem();
+        DataFolder selectedFolder = (DataFolder) datatypesJComboBox.getSelectedItem();
 
         try {
-            Runtime.getRuntime().exec("explorer " + selectedFolder);
+            Runtime.getRuntime().exec("explorer " + selectedFolder.getFolderPath());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -593,6 +649,8 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
             ArrayList<Dataset> datasets = getDatasets(tempProject);
             updateDatasetTable(datasets, tempProject.getName());
         }
+
+        removeProjectButton.setEnabled(row != -1);
     }//GEN-LAST:event_projectsTableMouseReleased
 
     /**
@@ -628,14 +686,14 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
             String datasetDescription = readDatasetDescription(projectName, datasetName);
             datasetDescriptionTextArea.setText(datasetDescription);
 
-            File projectFolder = new File(localFolder, projectName);
-            File datasetFolder = new File(projectFolder, datasetName);
+            Vector<DataFolder> folders = new Vector<DataFolder>();
 
-            ArrayList<String> datasetTypes = getDatasetTypes();
-            Vector<String> folders = new Vector<String>();
+            ArrayList<DataFolder> dataFolders = getDatasetDataFolders(projectName, datasetName);
 
-            for (int i = 0; i < datasetTypes.size(); i++) {
-                folders.add(new File(datasetFolder, datasetTypes.get(i)).getPath());
+            // iterate the data folders for the dataset
+            for (int j = 0; j < dataFolders.size(); j++) {
+                DataFolder dataFolder = dataFolders.get(j);
+                folders.add(dataFolder);
             }
 
             datatypesJComboBox.setModel(new DefaultComboBoxModel(folders));
@@ -648,6 +706,9 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
             openJButton.setEnabled(false);
             copyJButton.setEnabled(false);
         }
+
+        editDatasetJButton.setEnabled(row != -1);
+        removeDatasetJButton.setEnabled(row != -1);
     }//GEN-LAST:event_datasetsTableMouseReleased
 
     /**
@@ -674,6 +735,101 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
     private void helpMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_helpMenuItemActionPerformed
         new HelpDialog(this, getClass().getResource("/helpFiles/StoreBioinfoHelp.html"));
     }//GEN-LAST:event_helpMenuItemActionPerformed
+
+    /**
+     * Remove the selected project.
+     *
+     * @param evt
+     */
+    private void removeProjectButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeProjectButtonActionPerformed
+
+        int selection = JOptionPane.showConfirmDialog(this, "This will remove the project and all related datasets."
+                + "\nNote that this will not delete data already moved to StoreBioinfo."
+                + "\n\nContinue?",
+                "Remove Project?", JOptionPane.YES_NO_CANCEL_OPTION);
+
+        if (selection == JOptionPane.YES_OPTION) {
+
+            int selectedRow = projectsTable.getSelectedRow();
+            String selectedProjectName = (String) projectsTable.getValueAt(selectedRow, 1);
+
+            File projectFolder = new File(localFolder, selectedProjectName);
+
+            try {
+                FileUtils.deleteDirectory(projectFolder);
+                updateProjectsList(selectedProjectName);
+                JOptionPane.showMessageDialog(this, "Project successfully removed.", "Project Removed.", JOptionPane.INFORMATION_MESSAGE);
+            } catch (IOException e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Failed to remove project. Try removing the proejct folder manually.", "Project Removal Failed.", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_removeProjectButtonActionPerformed
+
+    /**
+     * Remove the selected dataset.
+     *
+     * @param evt
+     */
+    private void removeDatasetJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeDatasetJButtonActionPerformed
+        int selection = JOptionPane.showConfirmDialog(this, "This will remove the selected dataset."
+                + "\nNote that this will not delete data already moved to StoreBioinfo."
+                + "\n\nContinue?",
+                "Remove Dataset?", JOptionPane.YES_NO_CANCEL_OPTION);
+
+        if (selection == JOptionPane.YES_OPTION) {
+
+            int selectedProjectsRow = projectsTable.getSelectedRow();
+            String selectedProjectName = (String) projectsTable.getValueAt(selectedProjectsRow, 1);
+
+            int selectedDatasetRow = datasetsTable.getSelectedRow();
+            String selectedDatasetName = (String) datasetsTable.getValueAt(selectedDatasetRow, 1);
+
+            File projectFolder = new File(localFolder, selectedProjectName);
+            File datasetFolder = new File(projectFolder, selectedDatasetName);
+
+            try {
+                FileUtils.deleteDirectory(datasetFolder);
+                updateProjectsList(selectedProjectName);
+                JOptionPane.showMessageDialog(this, "Dataset successfully removed.", "Dataset Removed.", JOptionPane.INFORMATION_MESSAGE);
+            } catch (IOException e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Failed to remove dataset. Try removing the dataset folder manually.", "Dataset Removal Failed.", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_removeDatasetJButtonActionPerformed
+
+    /**
+     * Edit the selected dataset.
+     *
+     * @param evt
+     */
+    private void editDatasetJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editDatasetJButtonActionPerformed
+
+        int selectedProjectsRow = projectsTable.getSelectedRow();
+        String selectedProjectName = (String) projectsTable.getValueAt(selectedProjectsRow, 1);
+
+        int selectedDatasetRow = datasetsTable.getSelectedRow();
+        String selectedDatasetName = (String) datasetsTable.getValueAt(selectedDatasetRow, 1);
+
+        Dataset tempDataset = new Dataset(selectedDatasetName,
+                readDatasetDescription(selectedProjectName, selectedDatasetName),
+                selectedProjectName,
+                getDatasetDataFolders(selectedProjectName, selectedDatasetName));
+
+        new NewDatasetDialog(this, tempDataset, true);
+    }//GEN-LAST:event_editDatasetJButtonActionPerformed
+
+    /**
+     * Double clicking in the dataset dialog opens the edit dataset dialog.
+     *
+     * @param evt
+     */
+    private void datasetsTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_datasetsTableMouseClicked
+        if (datasetsTable.getSelectedRow() != -1 && evt.getButton() == 1 && evt.getClickCount() == 2) {
+            editDatasetJButtonActionPerformed(null);
+        }
+    }//GEN-LAST:event_datasetsTableMouseClicked
 
     /**
      * Updates the dataset table.
@@ -746,14 +902,41 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
                     });
         }
 
-        // add the number of files of each dataset type
+
+        // iterate the datasets
         for (int i = 0; i < datasetsTable.getRowCount(); i++) {
 
-            File datasetFolder = new File(new File(localFolder, projectName), datasets.get(i).getName());
+            ArrayList<DataFolder> dataFolders = getDatasetDataFolders(projectName, datasets.get(i).getName());
+            HashMap<String, Integer> dataFileCounter = new HashMap<String, Integer>();
 
-            for (int j = 0; j < datasetTypes.size(); j++) {
-                File tempDataTypeFolder = new File(datasetFolder, datasetTypes.get(j));
-                datasetsTable.setValueAt(tempDataTypeFolder.listFiles().length, i, j + 3);
+            // iterate the data folders for the dataset
+            for (int j = 0; j < dataFolders.size(); j++) {
+
+                DataFolder dataFolder = dataFolders.get(j);
+
+                File tempDataFolder = new File(dataFolder.getFolderPath());
+
+                // get the number of files in the given data folder
+                if (dataFileCounter.containsKey(dataFolder.getDataType())) {
+                    Integer count = dataFileCounter.get(dataFolder.getDataType());
+                    count += tempDataFolder.listFiles().length;
+                    dataFileCounter.put(dataFolder.getDataType(), ++count);
+                } else {
+                    dataFileCounter.put(dataFolder.getDataType(), tempDataFolder.listFiles().length);
+                }
+            }
+
+            // add the number of files of each dataset type
+            for (int j = 0; j < getDatasetTypes().size(); j++) {
+                String dataType = getDatasetTypes().get(j);
+
+                Integer counter = dataFileCounter.get(dataType);
+
+                if (dataFileCounter.get(dataType) == null) {
+                    counter = 0;
+                }
+
+                datasetsTable.setValueAt(counter, i, datasetsTable.getColumn(dataType).getModelIndex());
             }
         }
 
@@ -822,27 +1005,30 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
     private javax.swing.JButton copyJButton;
     private javax.swing.JScrollPane dataSetsJScrollPane;
     private javax.swing.JScrollPane datasetDescriptionJScrollPane;
+    private javax.swing.JLabel datasetDescriptionLabel;
     private javax.swing.JTextArea datasetDescriptionTextArea;
     private javax.swing.JLabel datasetsJLabel;
     private javax.swing.JTable datasetsTable;
     private javax.swing.JComboBox datatypesJComboBox;
+    private javax.swing.JButton editDatasetJButton;
     private javax.swing.JMenuItem exitMenuItem;
     private javax.swing.JMenu fileMenu;
+    private javax.swing.JLabel foldersLabel;
     private javax.swing.JMenu helpMenu;
     private javax.swing.JMenuItem helpMenuItem;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel localProjectsPanel;
     private javax.swing.JScrollPane localProjectsScrollPane;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JButton openJButton;
+    private javax.swing.JLabel projectDescriptionLabel;
     private javax.swing.JScrollPane projectDescriptionScrollPane;
     private javax.swing.JTextArea projectDescriptionTextArea;
     private javax.swing.JPanel projectDetailsPanel;
     private javax.swing.JTextField projectSummaryJTextField;
     private javax.swing.JTable projectsTable;
+    private javax.swing.JButton removeDatasetJButton;
+    private javax.swing.JButton removeProjectButton;
+    private javax.swing.JLabel summaryLabel;
     // End of variables declaration//GEN-END:variables
 
     /**
@@ -978,7 +1164,10 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
 
         for (int i = 0; i < datasetFolders.length; i++) {
             if (datasetFolders[i].isDirectory()) {
-                datasets.add(new Dataset(datasetFolders[i].getName(), readDatasetDescription(project.getName(), datasetFolders[i].getName())));
+                datasets.add(new Dataset(datasetFolders[i].getName(),
+                        readDatasetDescription(project.getName(), datasetFolders[i].getName()),
+                        project.getName(),
+                        getDatasetDataFolders(project.getName(), datasetFolders[i].getName())));
             }
         }
 
@@ -1018,6 +1207,54 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
         }
 
         return description;
+    }
+
+    /**
+     * Get the dataset data folders.
+     *
+     * @param projectName
+     * @param datasetName
+     * @return the dataset description
+     */
+    private ArrayList<DataFolder> getDatasetDataFolders(String projectName, String datasetName) {
+
+        ArrayList<DataFolder> dataFolders = new ArrayList<DataFolder>();
+
+        File projectFolder = new File(localFolder, projectName);
+        File datasetFolder = new File(projectFolder, datasetName);
+        File metaFile = new File(datasetFolder, "meta.xml");
+
+        try {
+            FileReader r = new FileReader(metaFile);
+            BufferedReader br = new BufferedReader(r);
+
+            br.readLine(); // skip the start tag
+            br.readLine(); // skip the description
+
+            String line = br.readLine();
+
+            // read the data folders
+            while (line != null && !line.equalsIgnoreCase("</dataset>")) {
+
+                String dataType = line.trim().substring(1, line.length() - 2);
+                String folder = br.readLine();
+                folder = folder.substring(folder.indexOf("<datafolder>") + "<datafolder>".length(),
+                        folder.indexOf("</datafolder>"));
+                dataFolders.add(new DataFolder(dataType, folder));
+
+                br.readLine(); // skip the datatype stop tag
+                line = br.readLine();
+            }
+
+            br.close();
+            r.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        return dataFolders;
     }
 
     /**
@@ -1152,31 +1389,42 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
         File projectFolder = new File(localFolder, projectName);
         File datasetFolder = new File(projectFolder, dataset.getName());
 
-        if (datasetFolder.exists()) {
-            JOptionPane.showMessageDialog(this, "Dataset \'" + dataset.getName() + "\' already exists!", "Dataset Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
+        if (!datasetFolder.exists()) {
+            boolean created = datasetFolder.mkdir();
 
-        boolean created = datasetFolder.mkdir();
-
-        if (!created) {
-            JOptionPane.showMessageDialog(this, "Dataset \'" + dataset.getName() + "\' folder could not be created!", "Dataset Error", JOptionPane.ERROR_MESSAGE);
-            return;
+            if (!created) {
+                JOptionPane.showMessageDialog(this, "Dataset \'" + dataset.getName() + "\' folder could not be created!", "Dataset Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
         }
 
         try {
-            // create the meta file
             File metaFile = new File(datasetFolder, "meta.xml");
-            created = new File(datasetFolder, "meta.xml").createNewFile();
-
+            
+            boolean created = true;
+            boolean alreadyExisted = true;
+            
+            // create the meta file
+            if (!metaFile.exists()) {
+                created = new File(datasetFolder, "meta.xml").createNewFile();
+                alreadyExisted = false;
+            }
+            
             if (created) {
 
                 FileWriter f = new FileWriter(metaFile);
                 BufferedWriter bw = new BufferedWriter(f);
 
-                String meta = "<dataset>" + "\n"
-                        + "\t<description>" + dataset.getDescription() + "</description>" + "\n"
-                        + "</dataset>";
+                String meta = "<dataset>" + "\n";
+                meta += "\t<description>" + dataset.getDescription() + "</description>" + "\n";
+
+                for (int i = 0; i < dataset.getDataFolders().size(); i++) {
+                    meta += "\t<" + dataset.getDataFolders().get(i).getDataType() + ">\n";
+                    meta += "\t\t<datafolder>" + dataset.getDataFolders().get(i).getFolderPath() + "</datafolder>" + "\n";
+                    meta += "\t</" + dataset.getDataFolders().get(i).getDataType() + ">\n";
+                }
+
+                meta += "</dataset>";
 
                 bw.write(meta);
                 bw.close();
@@ -1186,24 +1434,14 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
                 return;
             }
 
-            // create the data folders
-            ArrayList<String> datasetTypes = getDatasetTypes();
-
-            for (int i = 0; i < datasetTypes.size(); i++) {
-                String type= datasetTypes.get(i);
-                
-                created = new File(datasetFolder, type).mkdir();
-
-                if (!created) {
-                    JOptionPane.showMessageDialog(this, "Dataset \'" + dataset.getName() + "\' failed to create folder " + type + "!", "Dataset Error", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-            }
-            
             updateProjectsList(projectName);
             projectsTableMouseReleased(null);
 
-            JOptionPane.showMessageDialog(this, "Dataset \'" + dataset.getName() + "\' created.", "Dataset Created", JOptionPane.INFORMATION_MESSAGE);
+            if (alreadyExisted) {
+                JOptionPane.showMessageDialog(this, "Dataset \'" + dataset.getName() + "\' updated.", "Dataset Updated", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(this, "Dataset \'" + dataset.getName() + "\' created.", "Dataset Created", JOptionPane.INFORMATION_MESSAGE);
+            }  
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -1232,5 +1470,23 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
         }
 
         return p.getProperty("storebioinfogui.version");
+    }
+
+    /**
+     * Returns the last selected folder.
+     *
+     * @return the lastSelectedFolder
+     */
+    public String getLastSelectedFolder() {
+        return lastSelectedFolder;
+    }
+
+    /**
+     * Set the last selected folder.
+     *
+     * @param lastSelectedFolder the lastSelectedFolder to set
+     */
+    public void setLastSelectedFolder(String lastSelectedFolder) {
+        this.lastSelectedFolder = lastSelectedFolder;
     }
 }

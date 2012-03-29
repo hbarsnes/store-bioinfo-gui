@@ -137,13 +137,15 @@
           <Layout>
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="1" attributes="0">
+                  <Group type="102" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="1" attributes="0">
-                          <Component id="localProjectsScrollPane" pref="833" max="32767" attributes="0"/>
-                          <Group type="102" attributes="0">
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="localProjectsScrollPane" alignment="1" pref="833" max="32767" attributes="0"/>
+                          <Group type="102" alignment="1" attributes="0">
                               <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                              <Component id="addProjectJButton" min="-2" pref="100" max="-2" attributes="0"/>
+                              <Component id="addProjectJButton" linkSize="2" min="-2" pref="80" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="removeProjectButton" linkSize="2" min="-2" pref="80" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
@@ -156,7 +158,10 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="localProjectsScrollPane" min="-2" pref="146" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="addProjectJButton" min="-2" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="addProjectJButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="removeProjectButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
                       <EmptySpace max="32767" attributes="0"/>
                   </Group>
               </Group>
@@ -196,11 +201,21 @@
             </Container>
             <Component class="javax.swing.JButton" name="addProjectJButton">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Add Project"/>
+                <Property name="text" type="java.lang.String" value="Add"/>
                 <Property name="toolTipText" type="java.lang.String" value="Add a new project"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="addProjectJButtonActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="removeProjectButton">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Remove"/>
+                <Property name="toolTipText" type="java.lang.String" value="Remove the selected project"/>
+                <Property name="enabled" type="boolean" value="false"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="removeProjectButtonActionPerformed"/>
               </Events>
             </Component>
           </SubComponents>
@@ -222,31 +237,35 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
-                              <Component id="jLabel4" min="-2" pref="60" max="-2" attributes="0"/>
+                              <Component id="summaryLabel" min="-2" pref="60" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="projectSummaryJTextField" max="32767" attributes="0"/>
                           </Group>
-                          <Component id="dataSetsJScrollPane" alignment="1" max="32767" attributes="0"/>
+                          <Component id="dataSetsJScrollPane" alignment="1" pref="833" max="32767" attributes="0"/>
                           <Group type="102" alignment="0" attributes="0">
-                              <Component id="jLabel7" min="-2" pref="60" max="-2" attributes="0"/>
+                              <Component id="foldersLabel" min="-2" pref="60" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="datatypesJComboBox" max="32767" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="openJButton" linkSize="1" min="-2" pref="100" max="-2" attributes="0"/>
+                              <Component id="openJButton" linkSize="1" min="-2" pref="80" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="copyJButton" linkSize="1" min="-2" pref="100" max="-2" attributes="0"/>
+                              <Component id="copyJButton" linkSize="1" min="-2" pref="80" max="-2" attributes="0"/>
                           </Group>
                           <Group type="102" alignment="1" attributes="0">
                               <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                              <Component id="addDatasetJButton" min="-2" pref="100" max="-2" attributes="0"/>
+                              <Component id="addDatasetJButton" linkSize="3" min="-2" pref="80" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="editDatasetJButton" linkSize="3" min="-2" pref="80" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="removeDatasetJButton" linkSize="3" min="-2" pref="80" max="-2" attributes="0"/>
                           </Group>
                           <Component id="projectDescriptionScrollPane" alignment="0" max="32767" attributes="0"/>
                           <Component id="datasetDescriptionJScrollPane" alignment="1" max="32767" attributes="0"/>
                           <Group type="102" attributes="0">
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="jLabel5" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Component id="projectDescriptionLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                                   <Component id="datasetsJLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Component id="jLabel8" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Component id="datasetDescriptionLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                           </Group>
@@ -260,11 +279,11 @@
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="jLabel4" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="summaryLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="projectSummaryJTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
-                      <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
+                      <Component id="projectDescriptionLabel" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="projectDescriptionScrollPane" min="-2" pref="64" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="29" max="-2" attributes="0"/>
@@ -272,16 +291,20 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="dataSetsJScrollPane" min="-2" pref="107" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="addDatasetJButton" min="-2" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="addDatasetJButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="editDatasetJButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="removeDatasetJButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
                       <EmptySpace min="-2" max="-2" attributes="0"/>
-                      <Component id="jLabel8" min="-2" max="-2" attributes="0"/>
+                      <Component id="datasetDescriptionLabel" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="datasetDescriptionJScrollPane" min="-2" pref="72" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="datatypesJComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="copyJButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="jLabel7" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="foldersLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="openJButton" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="32767" attributes="0"/>
@@ -307,7 +330,7 @@
                 </Component>
               </SubComponents>
             </Container>
-            <Component class="javax.swing.JLabel" name="jLabel4">
+            <Component class="javax.swing.JLabel" name="summaryLabel">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Summary:"/>
               </Properties>
@@ -321,12 +344,12 @@
                 </Property>
               </Properties>
             </Component>
-            <Component class="javax.swing.JLabel" name="jLabel5">
+            <Component class="javax.swing.JLabel" name="projectDescriptionLabel">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Project Description"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JLabel" name="jLabel7">
+            <Component class="javax.swing.JLabel" name="foldersLabel">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Folders:"/>
               </Properties>
@@ -365,15 +388,19 @@
                         <Column editable="false" title="Description" type="java.lang.String"/>
                       </Table>
                     </Property>
+                    <Property name="selectionModel" type="javax.swing.ListSelectionModel" editor="org.netbeans.modules.form.editors2.JTableSelectionModelEditor">
+                      <JTableSelectionModel selectionMode="0"/>
+                    </Property>
                   </Properties>
                   <Events>
+                    <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="datasetsTableMouseClicked"/>
                     <EventHandler event="mouseReleased" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="datasetsTableMouseReleased"/>
                     <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="datasetsTableKeyReleased"/>
                   </Events>
                 </Component>
               </SubComponents>
             </Container>
-            <Component class="javax.swing.JLabel" name="jLabel8">
+            <Component class="javax.swing.JLabel" name="datasetDescriptionLabel">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Dataset Description"/>
               </Properties>
@@ -402,7 +429,7 @@
             </Component>
             <Component class="javax.swing.JButton" name="addDatasetJButton">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Add Dataset"/>
+                <Property name="text" type="java.lang.String" value="Add"/>
                 <Property name="toolTipText" type="java.lang.String" value="Add a new dataset to the selected project"/>
                 <Property name="enabled" type="boolean" value="false"/>
               </Properties>
@@ -418,6 +445,26 @@
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="openJButtonActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="editDatasetJButton">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Edit"/>
+                <Property name="toolTipText" type="java.lang.String" value="Edit the selected dataset"/>
+                <Property name="enabled" type="boolean" value="false"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="editDatasetJButtonActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="removeDatasetJButton">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Remove"/>
+                <Property name="toolTipText" type="java.lang.String" value="Remove the selected dataset"/>
+                <Property name="enabled" type="boolean" value="false"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="removeDatasetJButtonActionPerformed"/>
               </Events>
             </Component>
           </SubComponents>
