@@ -146,7 +146,6 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
         if (projectsTable.getRowCount() > 0) {
             projectsTable.setRowSelectionInterval(selectedRow, selectedRow);
             projectsTableMouseReleased(null);
-
             addDatasetJButton.setEnabled(true);
         }
 
@@ -757,7 +756,10 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
 
             try {
                 FileUtils.deleteDirectory(projectFolder);
-                updateProjectsList(selectedProjectName);
+                projectSummaryJTextField.setText("");
+                projectDescriptionTextArea.setText("");
+                ((TitledBorder) projectDetailsPanel.getBorder()).setTitle("Project Details");
+                updateProjectsList(null);                
                 JOptionPane.showMessageDialog(this, "Project successfully removed.", "Project Removed.", JOptionPane.INFORMATION_MESSAGE);
             } catch (IOException e) {
                 e.printStackTrace();
