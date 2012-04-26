@@ -19,6 +19,13 @@ import javax.swing.table.DefaultTableModel;
 import no.uib.storbioinfogui.data.DataFolder;
 import org.apache.commons.io.FileUtils;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import no.uib.storbioinfogui.util.XMLUtility;
+import org.w3c.dom.Element;
+
 /**
  * The main GUI class. Also contains most of the methods.
  *
@@ -65,18 +72,18 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
         localProjectsScrollPane.getViewport().setOpaque(false);
         dataSetsJScrollPane.getViewport().setOpaque(false);
 
-        File configFile = new File(getJarFilePath());
-        File localPathFile = new File(configFile.getParentFile(), "config/local_path");
-
+        File jarFile = new File(getJarFilePath());
+        File localPathFile = new File(jarFile.getParentFile(), "config/local_path");
+        //JOptionPane.showMessageDialog(this, "config path is: " + localPathFile);
         try {
             FileReader r = new FileReader(localPathFile);
             BufferedReader br = new BufferedReader(r);
 
             String localFolderPath = br.readLine();
+            
             localFolder = new File(localFolderPath);
-
             if (!localFolder.exists()) {
-                JOptionPane.showMessageDialog(null, "Local folder \'" + localPathFile + "\' not found! Closing program.", "Folder Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Local folder \'" + localFolderPath + "\' not found! Closing program.", "Folder Error", JOptionPane.ERROR_MESSAGE);
                 System.exit(0);
             }
 
@@ -160,15 +167,8 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
      * @return the path to the jar file
      */
     private String getJarFilePath() {
-        String path = this.getClass().getResource("StoreBioinfoGUI.class").getPath();
-
-        if (path.lastIndexOf("/StoreBioinfo.jar") != -1) {
-            path = path.substring(5, path.lastIndexOf("/StoreBioinfo.jar"));
-            path = path.replace("%20", " ");
-        } else {
-            path = ".";
-        }
-
+        String path = StoreBioinfoGUI.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+        path = path.replace("%20", " ");
         return path;
     }
 
@@ -1226,35 +1226,23 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
         File datasetFolder = new File(projectFolder, datasetName);
         File metaFile = new File(datasetFolder, "meta.xml");
 
-        try {
-            FileReader r = new FileReader(metaFile);
-            BufferedReader br = new BufferedReader(r);
-
-            br.readLine(); // skip the start tag
-            br.readLine(); // skip the description
-
-            String line = br.readLine();
-
-            // read the data folders
-            while (line != null && !line.equalsIgnoreCase("</dataset>")) {
-
-                String dataType = line.trim().substring(1, line.length() - 2);
-                String folder = br.readLine();
-                folder = folder.substring(folder.indexOf("<datafolder>") + "<datafolder>".length(),
-                        folder.indexOf("</datafolder>"));
-                dataFolders.add(new DataFolder(dataType, folder));
-
-                br.readLine(); // skip the datatype stop tag
-                line = br.readLine();
-            }
-
-            br.close();
-            r.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+        try
+        {
+            Document doc = XMLUtility.parseXml(metaFile.getPath());
+           //get the root
+           NodeList nodes = doc.getElementsByTagName("datafolder");
+           for(int i=0;i<nodes.getLength();i++){
+               Node node = nodes.item(i);
+               if(node.getNodeType() == Node.ELEMENT_NODE){
+                   Element elm = (Element)node;
+                   dataFolders.add(new DataFolder(elm.getAttribute("path"),elm.getAttribute("type")));
+               }
+           }
+           
         }
+       catch(Exception ex){
+            ex.printStackTrace();
+       }
 
         return dataFolders;
     }
@@ -1348,8 +1336,9 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
 
         ArrayList<String> datasetTypes = new ArrayList<String>();
 
-        File configFile = new File(getJarFilePath());
-        File datasetTypesFile = new File(configFile.getParentFile(), "config/dataset_types");
+        File jarFile = new File(getJarFilePath());
+        File datasetTypesFile = new File(jarFile.getParentFile(), "config/dataset_types");
+        //JOptionPane.showMessageDialog(this, "Dataset types:" + datasetTypesFile);
 
         if (!datasetTypesFile.exists()) {
             JOptionPane.showMessageDialog(this, "Dataset types file not found! Closing program.", "Folder Error", JOptionPane.ERROR_MESSAGE);
@@ -1420,10 +1409,10 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
                 String meta = "<dataset>" + "\n";
                 meta += "\t<description>" + dataset.getDescription() + "</description>" + "\n";
 
+                //comment by kidane: There is something wrong here. Just can't put a handle on it
                 for (int i = 0; i < dataset.getDataFolders().size(); i++) {
-                    meta += "\t<" + dataset.getDataFolders().get(i).getDataType() + ">\n";
-                    meta += "\t\t<datafolder>" + dataset.getDataFolders().get(i).getFolderPath() + "</datafolder>" + "\n";
-                    meta += "\t</" + dataset.getDataFolders().get(i).getDataType() + ">\n";
+                   // meta +="\t<datafolder path=\""+dataset.getDataFolders().get(i).getFolderPath()+"\" type=\"" + dataset.getDataFolders().get(i).getDataType() +"\"/>\n";
+                     meta +="\t<datafolder path=\""+dataset.getDataFolders().get(i).getDataType()+"\" type=\"" + dataset.getDataFolders().get(i).getFolderPath() +"\"/>\n";
                 }
 
                 meta += "</dataset>";
