@@ -387,7 +387,8 @@ public class NewDatasetDialog extends javax.swing.JDialog {
                 dataFolders = new ArrayList<DataFolder>();
 
                 for (int i = 0; i < dataFoldersJTable.getRowCount(); i++) {
-                    dataFolders.add(new DataFolder((String) dataFoldersJTable.getValueAt(i, 1), (String) dataFoldersJTable.getValueAt(i, 2)));
+                    dataFolders.add(new DataFolder((String) dataFoldersJTable.getValueAt(i, dataFoldersJTable.getColumn("Folder").getModelIndex()), 
+                            (String) dataFoldersJTable.getValueAt(i, dataFoldersJTable.getColumn("Type").getModelIndex())));
                 }
 
                 storeBioinfoGUI.addDataset(projectName, new Dataset(nameJTextField.getText(), descriptionTextArea.getText(), projectName, dataFolders));

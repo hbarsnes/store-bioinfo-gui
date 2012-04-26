@@ -13,7 +13,7 @@
 
     <!-- Set the version number for the whole project -->
     <properties>
-        <version.number>0.2.1</version.number>
+        <version.number>0.2.2</version.number>
     </properties>
 
 
@@ -31,8 +31,14 @@
         <developer>
             <name>Harald Barsnes</name>
             <id>harald</id>
-            <email>harald.barsnes@biomed.uib.no</email>
+            <email>harald.barsnes AT biomed.uib.no</email>
             <organization>Department of Biomedicine, University of Bergen, Norway</organization>
+        </developer>
+        <developer>
+            <name>Kidane Tekle</name>
+            <id>kidane</id>
+            <email>kidane.tekle AT uni.no</email>
+            <organization>Computational Biology Unit, University of Bergen, Norway</organization>
         </developer>
     </developers>
 
