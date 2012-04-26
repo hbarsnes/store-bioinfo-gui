@@ -170,7 +170,6 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
      */
     public String getJarFilePath() {
         String path = this.getClass().getResource("StoreBioinfoGUI.class").getPath();
-
         if (path.lastIndexOf("/store-bioinfo-gui-") != -1) {
             path = path.substring(5, path.lastIndexOf("/store-bioinfo-gui-"));
             path = path.replace("%20", " ");
@@ -183,8 +182,10 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
         } else {
             path = ".";
         }
-
+        //path= "D:\\temp\\storebioinfo-gui-0.2.2"; //for debugging in netbeans
         return path;
+        
+        
     }
 
     /**
@@ -1258,7 +1259,9 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
                Node node = nodes.item(i);
                if(node.getNodeType() == Node.ELEMENT_NODE){
                    Element elm = (Element)node;
-                   dataFolders.add(new DataFolder(elm.getAttribute("path"),elm.getAttribute("type")));
+                   String path = XMLUtility.getTagValue("path", elm);
+                   String type = XMLUtility.getTagValue("type", elm);
+                   dataFolders.add( new DataFolder(path,type));
                }
            }
            
@@ -1432,7 +1435,10 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
                 meta += "\t<description>" + dataset.getDescription() + "</description>" + "\n";
 
                 for (int i = 0; i < dataset.getDataFolders().size(); i++) {
-                   meta +="\t<datafolder path=\""+dataset.getDataFolders().get(i).getFolderPath()+"\" type=\"" + dataset.getDataFolders().get(i).getDataType() +"\"/>\n";
+                    meta +="\t<datafolder>\n";
+                    meta +="\t\t<path>"+dataset.getDataFolders().get(i).getFolderPath()+"</path>\n";
+                    meta +="\t\t<type>"+dataset.getDataFolders().get(i).getDataType()+"</type>\n";
+                    meta +="\t</datafolder>\n";
                 }
 
                 meta += "</dataset>";
