@@ -73,8 +73,8 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
         dataSetsJScrollPane.getViewport().setOpaque(false);
 
         File jarFile = new File(getJarFilePath());
-        File localPathFile = new File(jarFile.getParentFile(), "config/local_path");
-        //JOptionPane.showMessageDialog(this, "config path is: " + localPathFile);
+        File localPathFile = new File(jarFile, "config/local_path");
+
         try {
             FileReader r = new FileReader(localPathFile);
             BufferedReader br = new BufferedReader(r);
@@ -148,6 +148,8 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
                 selectedRow = projectsTable.getRowCount() - 1;
             }
         }
+        
+        removeProjectButton.setEnabled(projectsTable.getRowCount() > 0);
 
         // select the given project
         if (projectsTable.getRowCount() > 0) {
@@ -161,14 +163,27 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
         localProjectsPanel.repaint();
     }
 
-    /**
+     /**
      * Returns the path to the jar file.
      *
      * @return the path to the jar file
      */
-    private String getJarFilePath() {
-        String path = StoreBioinfoGUI.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-        path = path.replace("%20", " ");
+    public String getJarFilePath() {
+        String path = this.getClass().getResource("StoreBioinfoGUI.class").getPath();
+
+        if (path.lastIndexOf("/store-bioinfo-gui-") != -1) {
+            path = path.substring(5, path.lastIndexOf("/store-bioinfo-gui-"));
+            path = path.replace("%20", " ");
+            path = path.replace("%5b", "[");
+            path = path.replace("%5d", "]");
+
+            if (System.getProperty("os.name").lastIndexOf("Windows") != -1) {
+                path = path.replace("/", "\\");
+            }
+        } else {
+            path = ".";
+        }
+
         return path;
     }
 
@@ -759,6 +774,12 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
                 projectSummaryJTextField.setText("");
                 projectDescriptionTextArea.setText("");
                 ((TitledBorder) projectDetailsPanel.getBorder()).setTitle("Project Details");
+                
+                // reset dataset table
+                while (datasetsTable.getRowCount() > 0) { 
+                    ((DefaultTableModel) datasetsTable.getModel()).removeRow(0);
+                }
+
                 updateProjectsList(null);                
                 JOptionPane.showMessageDialog(this, "Project successfully removed.", "Project Removed.", JOptionPane.INFORMATION_MESSAGE);
             } catch (IOException e) {
@@ -946,6 +967,8 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
         datatypesJComboBox.setEnabled(false);
         openJButton.setEnabled(false);
         copyJButton.setEnabled(false);
+        
+        removeDatasetJButton.setEnabled(datasetsTable.getRowCount() > 0);
 
         if (datasetsTable.getRowCount() > 0) {
             datasetsJLabel.setText("Datasets (" + datasetsTable.getRowCount() + ")");
@@ -1337,8 +1360,7 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
         ArrayList<String> datasetTypes = new ArrayList<String>();
 
         File jarFile = new File(getJarFilePath());
-        File datasetTypesFile = new File(jarFile.getParentFile(), "config/dataset_types");
-        //JOptionPane.showMessageDialog(this, "Dataset types:" + datasetTypesFile);
+        File datasetTypesFile = new File(jarFile, "config/dataset_types");
 
         if (!datasetTypesFile.exists()) {
             JOptionPane.showMessageDialog(this, "Dataset types file not found! Closing program.", "Folder Error", JOptionPane.ERROR_MESSAGE);
@@ -1409,10 +1431,8 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
                 String meta = "<dataset>" + "\n";
                 meta += "\t<description>" + dataset.getDescription() + "</description>" + "\n";
 
-                //comment by kidane: There is something wrong here. Just can't put a handle on it
                 for (int i = 0; i < dataset.getDataFolders().size(); i++) {
-                   // meta +="\t<datafolder path=\""+dataset.getDataFolders().get(i).getFolderPath()+"\" type=\"" + dataset.getDataFolders().get(i).getDataType() +"\"/>\n";
-                     meta +="\t<datafolder path=\""+dataset.getDataFolders().get(i).getDataType()+"\" type=\"" + dataset.getDataFolders().get(i).getFolderPath() +"\"/>\n";
+                   meta +="\t<datafolder path=\""+dataset.getDataFolders().get(i).getFolderPath()+"\" type=\"" + dataset.getDataFolders().get(i).getDataType() +"\"/>\n";
                 }
 
                 meta += "</dataset>";
