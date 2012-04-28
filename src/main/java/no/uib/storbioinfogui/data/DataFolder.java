@@ -9,9 +9,9 @@ package no.uib.storbioinfogui.data;
 public class DataFolder {
 
     /**
-     * The path to the data folder.
+     * The relative path to the data folder. Note: Relative to the mapped folder.
      */
-    private String folderPath;
+    private String relativeFolderPath;
     /**
      * The data type.
      */
@@ -20,30 +20,30 @@ public class DataFolder {
     /**
      * Create a new DataFolder object.
      *
-     * @param folderPath
+     * @param relativeFolderPath
      * @param dataType
      */
-    public DataFolder(String folderPath, String dataType) {
-        this.folderPath = folderPath;
+    public DataFolder(String relativeFolderPath, String dataType) {
+        this.relativeFolderPath = relativeFolderPath;
         this.dataType = dataType;
     }
 
     /**
-     * Returns the path to the data folder.
+     * Returns the relative path to the data folder.
      *
-     * @return the folderPath
+     * @return the relativeFolderPath
      */
-    public String getFolderPath() {
-        return folderPath;
+    public String getRelativeFolderPath() {
+        return relativeFolderPath;
     }
 
     /**
-     * Set the path to the data folder.
+     * Set the relative path to the data folder.
      *
-     * @param folderPath the folderPath to set
+     * @param relativeFolderPath the relativeFolderPath to set
      */
-    public void setFolderPath(String folderPath) {
-        this.folderPath = folderPath;
+    public void setFolderPath(String relativeFolderPath) {
+        this.relativeFolderPath = relativeFolderPath;
     }
 
     /**
@@ -65,6 +65,6 @@ public class DataFolder {
     }
     
     public String toString() {
-        return "[" + dataType + "]    " + folderPath;
+        return "[" + dataType + "]    " + relativeFolderPath;
     }
 }

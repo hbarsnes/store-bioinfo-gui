@@ -104,10 +104,11 @@ public class NewDatasetDialog extends javax.swing.JDialog {
             descriptionTextArea.setText(description);
 
             for (int i = 0; i < dataFolders.size(); i++) {
+                
                 ((DefaultTableModel) dataFoldersJTable.getModel()).addRow(new Object[]{
                             (i + 1),
                             dataFolders.get(i).getDataType(),
-                            dataFolders.get(i).getFolderPath()
+                            dataFolders.get(i).getRelativeFolderPath()
                 });
             }
         }
@@ -510,10 +511,15 @@ public class NewDatasetDialog extends javax.swing.JDialog {
      * @param datasetType
      */
     public void insertDataFolder(String folderPath, String datasetType) {
+        
+        // make the folder path relative to the mapped folder
+        String tempPath = folderPath;
+        tempPath = tempPath.substring(storeBioinfoGUI.getMappedFolder().getAbsolutePath().length()); 
+        
         ((DefaultTableModel) dataFoldersJTable.getModel()).addRow(new Object[]{
                     dataFoldersJTable.getRowCount() + 1,
                     datasetType,
-                    folderPath
+                    tempPath
                 });
     }
 

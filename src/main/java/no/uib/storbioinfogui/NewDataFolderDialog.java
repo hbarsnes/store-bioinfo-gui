@@ -4,6 +4,7 @@ package no.uib.storbioinfogui;
 import java.io.File;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 import no.uib.storbioinfogui.util.AlignedListCellRenderer;
 
@@ -33,6 +34,7 @@ public class NewDataFolderDialog extends javax.swing.JDialog {
         typeJComboBox.setRenderer(new AlignedListCellRenderer(SwingConstants.CENTER));
         typeJComboBox.setModel(new DefaultComboBoxModel(datasetTypes));
         setLocationRelativeTo(datasetDialog);
+        rootFolderLabel.setText("\'" + datasetDialog.getStoreBioinfoGUI().getMappedFolder().getAbsolutePath() + "\' ");
         setVisible(true);
     }
 
@@ -51,6 +53,8 @@ public class NewDataFolderDialog extends javax.swing.JDialog {
         browseButton = new javax.swing.JButton();
         typeLabel = new javax.swing.JLabel();
         typeJComboBox = new javax.swing.JComboBox();
+        rootFolderHelpLabel = new javax.swing.JLabel();
+        rootFolderLabel = new javax.swing.JLabel();
         okJButton = new javax.swing.JButton();
         cancelJButton = new javax.swing.JButton();
         mandatoryLabel = new javax.swing.JLabel();
@@ -77,6 +81,12 @@ public class NewDataFolderDialog extends javax.swing.JDialog {
 
         typeJComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
+        rootFolderHelpLabel.setFont(rootFolderHelpLabel.getFont().deriveFont((rootFolderHelpLabel.getFont().getStyle() | java.awt.Font.ITALIC)));
+        rootFolderHelpLabel.setText("Folder has to be rooted in:");
+
+        rootFolderLabel.setFont(rootFolderLabel.getFont().deriveFont((rootFolderLabel.getFont().getStyle() | java.awt.Font.ITALIC)));
+        rootFolderLabel.setText("-");
+
         javax.swing.GroupLayout propertiesPanelLayout = new javax.swing.GroupLayout(propertiesPanel);
         propertiesPanel.setLayout(propertiesPanelLayout);
         propertiesPanelLayout.setHorizontalGroup(
@@ -88,10 +98,17 @@ public class NewDataFolderDialog extends javax.swing.JDialog {
                     .addComponent(typeLabel))
                 .addGap(18, 18, 18)
                 .addGroup(propertiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(folderTextField)
-                    .addComponent(typeJComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(browseButton)
+                    .addGroup(propertiesPanelLayout.createSequentialGroup()
+                        .addGroup(propertiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(folderTextField)
+                            .addComponent(typeJComboBox, 0, 528, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(browseButton))
+                    .addGroup(propertiesPanelLayout.createSequentialGroup()
+                        .addComponent(rootFolderHelpLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(rootFolderLabel)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         propertiesPanelLayout.setVerticalGroup(
@@ -106,6 +123,10 @@ public class NewDataFolderDialog extends javax.swing.JDialog {
                 .addGroup(propertiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(typeLabel)
                     .addComponent(typeJComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(propertiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(rootFolderHelpLabel)
+                    .addComponent(rootFolderLabel))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -130,17 +151,18 @@ public class NewDataFolderDialog extends javax.swing.JDialog {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(10, 10, 10)
+                        .addContainerGap()
+                        .addComponent(propertiesPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(20, 20, 20)
                         .addComponent(mandatoryLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 358, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 448, Short.MAX_VALUE)
                         .addComponent(okJButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cancelJButton))
-                    .addComponent(propertiesPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(cancelJButton)))
                 .addContainerGap())
         );
 
@@ -195,8 +217,14 @@ public class NewDataFolderDialog extends javax.swing.JDialog {
 
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fileChooser.getSelectedFile();
-            folderTextField.setText(selectedFile.getAbsolutePath());
             datasetDialog.getStoreBioinfoGUI().setLastSelectedFolder(selectedFile.getParent());
+            
+            if (!selectedFile.getAbsolutePath().startsWith(datasetDialog.getStoreBioinfoGUI().getMappedFolder().getAbsolutePath())) {
+                JOptionPane.showMessageDialog(this, "The datafolder has to be rooted in \'" + datasetDialog.getStoreBioinfoGUI().getMappedFolder().getAbsolutePath() + "\'.", 
+                        "Datafolder Error", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                folderTextField.setText(selectedFile.getAbsolutePath());
+            } 
         }
     }//GEN-LAST:event_browseButtonActionPerformed
 
@@ -208,6 +236,8 @@ public class NewDataFolderDialog extends javax.swing.JDialog {
     private javax.swing.JLabel mandatoryLabel;
     private javax.swing.JButton okJButton;
     private javax.swing.JPanel propertiesPanel;
+    private javax.swing.JLabel rootFolderHelpLabel;
+    private javax.swing.JLabel rootFolderLabel;
     private javax.swing.JComboBox typeJComboBox;
     private javax.swing.JLabel typeLabel;
     // End of variables declaration//GEN-END:variables
