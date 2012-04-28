@@ -34,9 +34,13 @@ import org.w3c.dom.Element;
 public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwner {
 
     /**
-     * The local StorBioinfo folder.
+     * The local mapped folder.
      */
-    private File localFolder;
+    private File mappedFolder;
+    /**
+     * The local StorBioinfo folder containing the meta data.
+     */
+    private File storeBioinfoFolder;
     /**
      * The list of all projets.
      */
@@ -80,11 +84,25 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
             BufferedReader br = new BufferedReader(r);
 
             String localFolderPath = br.readLine();
-            
-            localFolder = new File(localFolderPath);
-            if (!localFolder.exists()) {
+            mappedFolder = new File(localFolderPath);
+
+            if (!mappedFolder.exists()) {
                 JOptionPane.showMessageDialog(null, "Local folder \'" + localFolderPath + "\' not found! Closing program.", "Folder Error", JOptionPane.ERROR_MESSAGE);
                 System.exit(0);
+            }
+
+            storeBioinfoFolder = new File(mappedFolder, "StoreBioinfo");
+
+            if (!new File(mappedFolder, "StoreBioinfo").exists()) {
+
+                // create the StoreBioinfo meta data folder
+                boolean success = storeBioinfoFolder.mkdir();
+
+                if (!success) {
+                    JOptionPane.showMessageDialog(null, "Failed to create StoreBioinfo folder \'" + new File(mappedFolder, "StoreBioinfo").getPath() + "\'! Closing program.",
+                            "Folder Error", JOptionPane.ERROR_MESSAGE);
+                    System.exit(0);
+                }
             }
 
             updateProjectsList(null);
@@ -103,7 +121,7 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
      */
     private void updateProjectsList(String projectName) {
 
-        File[] allLocalProjects = localFolder.listFiles();
+        File[] allLocalProjects = storeBioinfoFolder.listFiles();
 
         allFiles = new HashMap<String, File>();
         ArrayList<String> fileNames = new ArrayList<String>();
@@ -148,7 +166,7 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
                 selectedRow = projectsTable.getRowCount() - 1;
             }
         }
-        
+
         removeProjectButton.setEnabled(projectsTable.getRowCount() > 0);
 
         // select the given project
@@ -163,7 +181,7 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
         localProjectsPanel.repaint();
     }
 
-     /**
+    /**
      * Returns the path to the jar file.
      *
      * @return the path to the jar file
@@ -184,8 +202,8 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
         }
         //path= "D:\\temp\\storebioinfo-gui-0.2.2"; //for debugging in netbeans
         return path;
-        
-        
+
+
     }
 
     /**
@@ -596,8 +614,9 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
     private void copyJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_copyJButtonActionPerformed
 
         DataFolder selectedFolder = (DataFolder) datatypesJComboBox.getSelectedItem();
+        String tempPath = new File(mappedFolder, selectedFolder.getRelativeFolderPath()).getAbsolutePath();
 
-        StringSelection stringSelection = new StringSelection(selectedFolder.getFolderPath());
+        StringSelection stringSelection = new StringSelection(tempPath);
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         clipboard.setContents(stringSelection, this);
 
@@ -611,9 +630,10 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
      */
     private void openJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openJButtonActionPerformed
         DataFolder selectedFolder = (DataFolder) datatypesJComboBox.getSelectedItem();
+        String tempPath = new File(mappedFolder, selectedFolder.getRelativeFolderPath()).getAbsolutePath();
 
         try {
-            Runtime.getRuntime().exec("explorer " + selectedFolder.getFolderPath());
+            Runtime.getRuntime().exec("explorer " + tempPath);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -768,20 +788,22 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
             int selectedRow = projectsTable.getSelectedRow();
             String selectedProjectName = (String) projectsTable.getValueAt(selectedRow, 1);
 
-            File projectFolder = new File(localFolder, selectedProjectName);
+            File projectFolder = new File(storeBioinfoFolder, selectedProjectName);
 
             try {
                 FileUtils.deleteDirectory(projectFolder);
                 projectSummaryJTextField.setText("");
                 projectDescriptionTextArea.setText("");
                 ((TitledBorder) projectDetailsPanel.getBorder()).setTitle("Project Details");
-                
+
                 // reset dataset table
-                while (datasetsTable.getRowCount() > 0) { 
+                while (datasetsTable.getRowCount() > 0) {
                     ((DefaultTableModel) datasetsTable.getModel()).removeRow(0);
                 }
 
-                updateProjectsList(null);                
+                removeDatasetJButton.setEnabled(datasetsTable.getRowCount() > 0);
+
+                updateProjectsList(null);
                 JOptionPane.showMessageDialog(this, "Project successfully removed.", "Project Removed.", JOptionPane.INFORMATION_MESSAGE);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -809,7 +831,7 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
             int selectedDatasetRow = datasetsTable.getSelectedRow();
             String selectedDatasetName = (String) datasetsTable.getValueAt(selectedDatasetRow, 1);
 
-            File projectFolder = new File(localFolder, selectedProjectName);
+            File projectFolder = new File(storeBioinfoFolder, selectedProjectName);
             File datasetFolder = new File(projectFolder, selectedDatasetName);
 
             try {
@@ -938,7 +960,7 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
 
                 DataFolder dataFolder = dataFolders.get(j);
 
-                File tempDataFolder = new File(dataFolder.getFolderPath());
+                File tempDataFolder = new File(mappedFolder, dataFolder.getRelativeFolderPath());
 
                 // get the number of files in the given data folder
                 if (dataFileCounter.containsKey(dataFolder.getDataType())) {
@@ -968,7 +990,7 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
         datatypesJComboBox.setEnabled(false);
         openJButton.setEnabled(false);
         copyJButton.setEnabled(false);
-        
+
         removeDatasetJButton.setEnabled(datasetsTable.getRowCount() > 0);
 
         if (datasetsTable.getRowCount() > 0) {
@@ -1064,7 +1086,7 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
      * @return true if the project exists
      */
     public boolean projectExists(String projectName) {
-        return new File(localFolder, projectName).exists();
+        return new File(storeBioinfoFolder, projectName).exists();
     }
 
     /**
@@ -1075,7 +1097,7 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
      * @return true if the dataset already exists
      */
     public boolean datasetExists(String projectName, String datasetName) {
-        File projectFolder = new File(localFolder, projectName);
+        File projectFolder = new File(storeBioinfoFolder, projectName);
         File datasetFolder = new File(projectFolder, datasetName);
         return datasetFolder.exists();
     }
@@ -1089,9 +1111,10 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
     public boolean addProject(Project project) {
 
         try {
-            if (!new File(localFolder, project.getName()).exists()) {
+            if (!new File(storeBioinfoFolder, project.getName()).exists()) {
+
                 // create the project
-                boolean created = new File(localFolder, project.getName()).mkdir();
+                boolean created = new File(storeBioinfoFolder, project.getName()).mkdir();
 
                 if (created) {
 
@@ -1113,7 +1136,6 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
             } else {
                 JOptionPane.showMessageDialog(this, "Project already exists!", "Project Error", JOptionPane.ERROR_MESSAGE);
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1129,9 +1151,9 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
      */
     private boolean createProjectMetaData(Project project) {
 
-        if (new File(localFolder, project.getName()).exists()) {
+        if (new File(storeBioinfoFolder, project.getName()).exists()) {
 
-            File projectFolder = new File(localFolder, project.getName());
+            File projectFolder = new File(storeBioinfoFolder, project.getName());
 
             try {
                 File metaFile = new File(projectFolder, "meta.xml");
@@ -1179,7 +1201,7 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
 
         ArrayList<Dataset> datasets = new ArrayList<Dataset>();
 
-        File projectFolder = new File(localFolder, project.getName());
+        File projectFolder = new File(storeBioinfoFolder, project.getName());
 
         if (!projectFolder.exists()) {
             JOptionPane.showMessageDialog(this, "Project \'" + project.getName() + "\' not found!", "Project Error", JOptionPane.ERROR_MESSAGE);
@@ -1211,7 +1233,7 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
 
         String description;
 
-        File projectFolder = new File(localFolder, projectName);
+        File projectFolder = new File(storeBioinfoFolder, projectName);
         File datasetFolder = new File(projectFolder, datasetName);
         File metaFile = new File(datasetFolder, "meta.xml");
 
@@ -1246,29 +1268,27 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
 
         ArrayList<DataFolder> dataFolders = new ArrayList<DataFolder>();
 
-        File projectFolder = new File(localFolder, projectName);
+        File projectFolder = new File(storeBioinfoFolder, projectName);
         File datasetFolder = new File(projectFolder, datasetName);
         File metaFile = new File(datasetFolder, "meta.xml");
 
-        try
-        {
+        try {
             Document doc = XMLUtility.parseXml(metaFile.getPath());
-           //get the root
-           NodeList nodes = doc.getElementsByTagName("datafolder");
-           for(int i=0;i<nodes.getLength();i++){
-               Node node = nodes.item(i);
-               if(node.getNodeType() == Node.ELEMENT_NODE){
-                   Element elm = (Element)node;
-                   String path = XMLUtility.getTagValue("path", elm);
-                   String type = XMLUtility.getTagValue("type", elm);
-                   dataFolders.add( new DataFolder(path,type));
-               }
-           }
-           
-        }
-       catch(Exception ex){
+            //get the root
+            NodeList nodes = doc.getElementsByTagName("datafolder");
+            for (int i = 0; i < nodes.getLength(); i++) {
+                Node node = nodes.item(i);
+                if (node.getNodeType() == Node.ELEMENT_NODE) {
+                    Element elm = (Element) node;
+                    String path = XMLUtility.getTagValue("path", elm);
+                    String type = XMLUtility.getTagValue("type", elm);
+                    dataFolders.add(new DataFolder(path, type));
+                }
+            }
+
+        } catch (Exception ex) {
             ex.printStackTrace();
-       }
+        }
 
         return dataFolders;
     }
@@ -1281,11 +1301,11 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
      */
     private Project readProjectMetaData(String projectName) {
 
-        if (new File(localFolder, projectName).exists()) {
+        if (new File(storeBioinfoFolder, projectName).exists()) {
 
             try {
 
-                File projectFolder = new File(localFolder, projectName);
+                File projectFolder = new File(storeBioinfoFolder, projectName);
                 File metaFile = new File(projectFolder, "meta.xml");
 
                 FileReader r = new FileReader(metaFile);
@@ -1334,7 +1354,7 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
 
         int numberOfDatasets = 0;
 
-        File projectFolder = new File(localFolder, project.getName());
+        File projectFolder = new File(storeBioinfoFolder, project.getName());
 
         if (!projectFolder.exists()) {
             JOptionPane.showMessageDialog(this, "Project \'" + project.getName() + "\' not found!", "Project Error", JOptionPane.ERROR_MESSAGE);
@@ -1402,7 +1422,7 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
      */
     public void addDataset(String projectName, Dataset dataset) {
 
-        File projectFolder = new File(localFolder, projectName);
+        File projectFolder = new File(storeBioinfoFolder, projectName);
         File datasetFolder = new File(projectFolder, dataset.getName());
 
         if (!datasetFolder.exists()) {
@@ -1416,16 +1436,16 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
 
         try {
             File metaFile = new File(datasetFolder, "meta.xml");
-            
+
             boolean created = true;
             boolean alreadyExisted = true;
-            
+
             // create the meta file
             if (!metaFile.exists()) {
                 created = new File(datasetFolder, "meta.xml").createNewFile();
                 alreadyExisted = false;
             }
-            
+
             if (created) {
 
                 FileWriter f = new FileWriter(metaFile);
@@ -1435,10 +1455,10 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
                 meta += "\t<description>" + dataset.getDescription() + "</description>" + "\n";
 
                 for (int i = 0; i < dataset.getDataFolders().size(); i++) {
-                    meta +="\t<datafolder>\n";
-                    meta +="\t\t<path>"+dataset.getDataFolders().get(i).getFolderPath()+"</path>\n";
-                    meta +="\t\t<type>"+dataset.getDataFolders().get(i).getDataType()+"</type>\n";
-                    meta +="\t</datafolder>\n";
+                    meta += "\t<datafolder>\n";
+                    meta += "\t\t<path>" + dataset.getDataFolders().get(i).getRelativeFolderPath() + "</path>\n";
+                    meta += "\t\t<type>" + dataset.getDataFolders().get(i).getDataType() + "</type>\n";
+                    meta += "\t</datafolder>\n";
                 }
 
                 meta += "</dataset>";
@@ -1458,7 +1478,7 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
                 JOptionPane.showMessageDialog(this, "Dataset \'" + dataset.getName() + "\' updated.", "Dataset Updated", JOptionPane.INFORMATION_MESSAGE);
             } else {
                 JOptionPane.showMessageDialog(this, "Dataset \'" + dataset.getName() + "\' created.", "Dataset Created", JOptionPane.INFORMATION_MESSAGE);
-            }  
+            }
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -1505,5 +1525,41 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
      */
     public void setLastSelectedFolder(String lastSelectedFolder) {
         this.lastSelectedFolder = lastSelectedFolder;
+    }
+
+    /**
+     * Returns the folder containing the StoreBioinfo meta data.
+     *
+     * @return the folder containing the StoreBioinfo meta data
+     */
+    public File getStoreBioinfoFolder() {
+        return storeBioinfoFolder;
+    }
+
+    /**
+     * Set the folder containing the StoreBioinfo meta data.
+     *
+     * @param storeBioinfoFolder the folder to set
+     */
+    public void setStoreBioinfoFolder(File storeBioinfoFolder) {
+        this.storeBioinfoFolder = storeBioinfoFolder;
+    }
+
+    /**
+     * Returns the mapped folder.
+     * 
+     * @return the mappedFolder
+     */
+    public File getMappedFolder() {
+        return mappedFolder;
+    }
+
+    /**
+     * Set the mapped folder.
+     * 
+     * @param mappedFolder the mappedFolder to set
+     */
+    public void setMappedFolder(File mappedFolder) {
+        this.mappedFolder = mappedFolder;
     }
 }
