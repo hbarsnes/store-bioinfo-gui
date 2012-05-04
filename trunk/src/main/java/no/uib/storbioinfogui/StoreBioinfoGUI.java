@@ -105,6 +105,9 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
                 }
             }
 
+            // set the last selected folder to the mapped drive
+            lastSelectedFolder = localFolderPath;
+            
             updateProjectsList(null);
 
         } catch (FileNotFoundException e) {
