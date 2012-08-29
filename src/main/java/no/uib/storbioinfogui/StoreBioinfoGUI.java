@@ -348,6 +348,7 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
 
         projectDescriptionTextArea.setColumns(20);
         projectDescriptionTextArea.setEditable(false);
+        projectDescriptionTextArea.setLineWrap(true);
         projectDescriptionTextArea.setRows(2);
         projectDescriptionTextArea.setWrapStyleWord(true);
         projectDescriptionScrollPane.setViewportView(projectDescriptionTextArea);
@@ -416,6 +417,7 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
 
         datasetDescriptionTextArea.setColumns(20);
         datasetDescriptionTextArea.setEditable(false);
+        datasetDescriptionTextArea.setLineWrap(true);
         datasetDescriptionTextArea.setRows(2);
         datasetDescriptionTextArea.setWrapStyleWord(true);
         datasetDescriptionJScrollPane.setViewportView(datasetDescriptionTextArea);
