@@ -681,6 +681,7 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
             Project tempProject = readProjectMetaData((String) projectsTable.getValueAt(row, 1));
             projectSummaryJTextField.setText(tempProject.getSummary());
             projectDescriptionTextArea.setText(tempProject.getDescription());
+            projectDescriptionTextArea.setCaretPosition(0);
 
             ((TitledBorder) projectDetailsPanel.getBorder()).setTitle("Project Details - " + tempProject.getName());
             projectDetailsPanel.revalidate();
@@ -725,6 +726,7 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
 
             String datasetDescription = readDatasetDescription(projectName, datasetName);
             datasetDescriptionTextArea.setText(datasetDescription);
+            datasetDescriptionTextArea.setCaretPosition(0);
 
             Vector<DataFolder> folders = new Vector<DataFolder>();
 
