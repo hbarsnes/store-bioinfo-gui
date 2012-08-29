@@ -102,6 +102,7 @@ public class NewDatasetDialog extends javax.swing.JDialog {
         if (editMode) {
             nameJTextField.setText(datasetName);
             descriptionTextArea.setText(description);
+            descriptionTextArea.setCaretPosition(0);
 
             for (int i = 0; i < dataFolders.size(); i++) {
                 
@@ -552,5 +553,6 @@ public class NewDatasetDialog extends javax.swing.JDialog {
     public void setDescription(String description) {
         this.description = description;
         descriptionTextArea.setText(description);
+        descriptionTextArea.setCaretPosition(0);
     }
 }
