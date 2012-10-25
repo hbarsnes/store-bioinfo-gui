@@ -1,5 +1,7 @@
 package no.uib.storbioinfogui;
 
+import java.awt.Color;
+import no.uib.jsparklines.renderers.*;
 import no.uib.storbioinfogui.data.Project;
 import no.uib.storbioinfogui.data.Dataset;
 import java.awt.Toolkit;
@@ -62,26 +64,9 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
      */
     private String lastSelectedFolder = "user.home";
     /**
-     * Indicating a newly project/dataset.
+     * The color used for the complete project status..
      */
-    private final int STATUS_NEW = 0;
-    /**
-     * Indicating a project/dataset that is currently being copied.
-     */
-    private final int STATUS_IN_PROGRESS = 1;
-    /**
-     * Indicating a project/dataset that has been copied.
-     */
-    private final int STATUS_COMPLETE = 2;
-    /**
-     * Indicating a project/dataset that failed when being copied.
-     */
-    private final int STATUS_FAILED = 3;
-    /**
-     * Indicating a project/dataset that has been deleted locally, but that has
-     * been copied to StoreBioinfo.
-     */
-    private final int STATUS_ARCHIVED = 4;
+    private Color sparklineColor = new Color(110, 196, 97);
 
     /**
      * Creates a new StoreBioinfoGUI frame.
@@ -99,6 +84,12 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
         datasetsTable.getColumn(" ").setMaxWidth(50);
         datasetsTable.getColumn(" ").setMinWidth(50);
 
+        // the status column
+        projectsTable.getColumn("  ").setMaxWidth(30);
+        projectsTable.getColumn("  ").setMinWidth(30);
+        datasetsTable.getColumn("  ").setMaxWidth(30);
+        datasetsTable.getColumn("  ").setMinWidth(30);
+
         projectsTable.getTableHeader().setReorderingAllowed(false);
         datasetsTable.getTableHeader().setReorderingAllowed(false);
 
@@ -113,13 +104,15 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
         File localPathFile = new File(jarFile, "config/local_path");
         File quotaIdsFile = new File(jarFile, "config/quota_ids");
 
+        setTableProperties();
+
         try {
             FileReader r = new FileReader(localPathFile);
             BufferedReader br = new BufferedReader(r);
 
             String localFolderPath = br.readLine();
             mappedFolder = new File(localFolderPath);
-            
+
             br.close();
             r.close();
 
@@ -144,13 +137,13 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
 
             // set the last selected folder to the mapped drive
             lastSelectedFolder = localFolderPath;
-            
+
             // get the quota ids
             r = new FileReader(quotaIdsFile);
             br = new BufferedReader(r);
-            
+
             String line = br.readLine();
-            
+
             while (line != null) {
                 String values[] = line.split("\\t");
                 quotaNames.add(values[0]);
@@ -158,7 +151,7 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
                 quotaIdToNameMap.put(values[1], values[0]);
                 line = br.readLine();
             }
-            
+
             br.close();
             r.close();
 
@@ -169,6 +162,35 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Set up the table properties.
+     */
+    private void setTableProperties() {
+
+        // set up the project status color map
+        HashMap<Integer, Color> statusColorMap = new HashMap<Integer, Color>();
+        statusColorMap.put(0, Color.YELLOW); // new
+        statusColorMap.put(1, Color.CYAN); // in progress
+        statusColorMap.put(2, sparklineColor); // complete
+        statusColorMap.put(3, Color.RED); // failed
+        statusColorMap.put(4, Color.BLUE); // archived
+        statusColorMap.put(5, Color.ORANGE); // partial
+        statusColorMap.put(-1, Color.LIGHT_GRAY); // unknown status
+
+        // set up the project status tooltip map
+        HashMap<Integer, String> statusTooltipMap = new HashMap<Integer, String>();
+        statusTooltipMap.put(0, "New");
+        statusTooltipMap.put(1, "In Progress");
+        statusTooltipMap.put(2, "Complete");
+        statusTooltipMap.put(3, "Failed");
+        statusTooltipMap.put(4, "Archived");
+        statusTooltipMap.put(5, "Partial");
+        statusTooltipMap.put(-1, "Unknown");
+
+        projectsTable.getColumn("  ").setCellRenderer(new JSparklinesIntegerColorTableCellRenderer(Color.YELLOW, statusColorMap, statusTooltipMap));
+        datasetsTable.getColumn("  ").setCellRenderer(new JSparklinesIntegerColorTableCellRenderer(Color.YELLOW, statusColorMap, statusTooltipMap));
     }
 
     /**
@@ -205,9 +227,7 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
 
             // get the meta data
             Project tempProject = readProjectMetaData(fileNames.get(i));
-
             int numberOfDatasets = getNumberOfDatasets(tempProject);
-
 
             ((DefaultTableModel) projectsTable.getModel()).addRow(new Object[]{
                         projectsTable.getRowCount() + 1,
@@ -217,7 +237,8 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
                         tempProject.getEMail(),
                         tempProject.getPhone(),
                         tempProject.getSummary(),
-                        numberOfDatasets
+                        numberOfDatasets,
+                        convertStatusToInteger(tempProject.getProjectStatus())
                     });
 
             if (projectName != null && projectName.equalsIgnoreCase(fileNames.get(i))) {
@@ -237,6 +258,31 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
         ((TitledBorder) localProjectsPanel.getBorder()).setTitle("Local Projects (" + projectsTable.getRowCount() + ")");
         localProjectsPanel.revalidate();
         localProjectsPanel.repaint();
+    }
+
+    /**
+     * Returns the project status as an integer.
+     *
+     * @param status the current project status as text
+     * @return the project status as an integer
+     */
+    private Integer convertStatusToInteger(String status) {
+
+        if (status.equalsIgnoreCase("new")) {
+            return 0;
+        } else if (status.equalsIgnoreCase("in progress")) {
+            return 1;
+        } else if (status.equalsIgnoreCase("complete")) {
+            return 2;
+        } else if (status.equalsIgnoreCase("failed")) {
+            return 3;
+        } else if (status.equalsIgnoreCase("archived")) {
+            return 4;
+        } else if (status.equalsIgnoreCase("partial")) {
+            return 5;
+        } else {
+            return -1; // unknown status
+        }
     }
 
     /**
@@ -319,14 +365,14 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
 
             },
             new String [] {
-                " ", "Quota", "Name", "Contact", "E-mail", "Phone", "Summary", "Datasets"
+                " ", "Quota", "Name", "Contact", "E-mail", "Phone", "Summary", "Datasets", "  "
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class, java.lang.Object.class, java.lang.String.class, java.lang.Integer.class
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class, java.lang.Object.class, java.lang.String.class, java.lang.Integer.class, java.lang.Integer.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false
+                false, false, false, false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -433,14 +479,14 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
 
             },
             new String [] {
-                " ", "Name", "Description"
+                " ", "Name", "Description", "  "
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.String.class
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false
+                false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -922,7 +968,8 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
         Dataset tempDataset = new Dataset(selectedDatasetName,
                 readDatasetDescription(selectedProjectName, selectedDatasetName),
                 selectedProjectName,
-                getDatasetDataFolders(selectedProjectName, selectedDatasetName));
+                getDatasetDataFolders(selectedProjectName, selectedDatasetName),
+                getDatasetStatus(selectedProjectName, selectedDatasetName));
 
         new NewDatasetDialog(this, tempDataset, true);
     }//GEN-LAST:event_editDatasetJButtonActionPerformed
@@ -955,13 +1002,6 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
                     " ", "Name", "Description"
                 }) {
 
-            Class[] types = new Class[]{
-                java.lang.Integer.class, java.lang.String.class, java.lang.String.class
-            };
-            boolean[] canEdit = new boolean[]{
-                false, false, false
-            };
-
             public Class getColumnClass(int columnIndex) {
 
                 switch (columnIndex) {
@@ -986,6 +1026,9 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
             ((DefaultTableModel) datasetsTable.getModel()).addColumn(datasetTypes.get(i));
         }
 
+        // add the status column
+        ((DefaultTableModel) datasetsTable.getModel()).addColumn("  ");
+
         // set the column widths for the dataset type columns
         for (int i = 0; i < datasetTypes.size(); i++) {
             datasetsTable.getColumn(datasetTypes.get(i)).setMinWidth(80);
@@ -994,6 +1037,8 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
 
         datasetsTable.getColumn(" ").setMaxWidth(50);
         datasetsTable.getColumn(" ").setMinWidth(50);
+        datasetsTable.getColumn("  ").setMaxWidth(30);
+        datasetsTable.getColumn("  ").setMinWidth(30);
 
         datasetDescriptionTextArea.setText("");
         datasetsJLabel.setText("Datasets");
@@ -1046,6 +1091,13 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
                 datasetsTable.setValueAt(counter, i, datasetsTable.getColumn(dataType).getModelIndex());
             }
         }
+
+        // add the status values
+        for (int i = 0; i < datasets.size(); i++) {
+            datasetsTable.setValueAt(convertStatusToInteger(datasets.get(i).getDatasetStatus()), i, datasetsTable.getColumn("  ").getModelIndex());
+        }
+
+        setTableProperties();
 
         datatypesJComboBox.setModel(new DefaultComboBoxModel());
         datatypesJComboBox.setEnabled(false);
@@ -1180,7 +1232,7 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
                 if (created) {
 
                     // create the metaDataXML file
-                    boolean metaDataAdded = createProjectMetaData(project);
+                    boolean metaDataAdded = createProjectMetaData(project, false);
 
                     if (metaDataAdded) {
                         // project created
@@ -1208,24 +1260,30 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
      * Create the project meta data.
      *
      * @param project
+     * @param overwrite if true the old project will be overwritten
      * @return the project meta data
      */
-    private boolean createProjectMetaData(Project project) {
+    private boolean createProjectMetaData(Project project, boolean overwrite) {
 
-        if (new File(storeBioinfoFolder, project.getName()).exists()) {
+        if (new File(storeBioinfoFolder, project.getName()).exists() || overwrite) {
 
             File projectFolder = new File(storeBioinfoFolder, project.getName());
 
             try {
                 File metaFile = new File(projectFolder, "meta.xml");
-                boolean created = new File(projectFolder, "meta.xml").createNewFile();
+
+                boolean created = true;
+
+                if (!overwrite) {
+                    created = new File(projectFolder, "meta.xml").createNewFile();
+                }
 
                 if (created) {
 
                     FileWriter f = new FileWriter(metaFile);
                     BufferedWriter bw = new BufferedWriter(f);
 
-                    String meta = "<project status=\"new\">" + "\n"
+                    String meta = "<project status=\"" + project.getProjectStatus() + "\">" + "\n"
                             + "\t<quota_id>" + project.getQuotaId() + "</quota_id>" + "\n"
                             + "\t<description>" + project.getDescription() + "</description>" + "\n"
                             + "\t<summary>" + project.getSummary() + "</summary>" + "\n"
@@ -1246,19 +1304,19 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
 
                         meta += "\t</mail_invites>" + "\n";
                     }
-                    
-                    
+
+
 
                     if (project.getUserInvites().size() > 0 || project.isSendUserInviteToDataOwner()) {
                         meta += "\t<user_invites>" + "\n";
                         for (String userInvite : project.getUserInvites()) {
                             meta += "\t\t<user_invite role=\"user\">" + userInvite + "</user_invite>" + "\n";
                         }
-                        
+
                         if (project.isSendUserInviteToDataOwner()) {
                             meta += "\t\t<user_invite role=\"pi\">" + project.getOwnerUserName() + "</user_invite>" + "\n";
                         }
-                        
+
                         meta += "\t</user_invites>" + "\n";
                     }
 
@@ -1307,7 +1365,8 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
                 datasets.add(new Dataset(datasetFolders[i].getName(),
                         readDatasetDescription(project.getName(), datasetFolders[i].getName()),
                         project.getName(),
-                        getDatasetDataFolders(project.getName(), datasetFolders[i].getName())));
+                        getDatasetDataFolders(project.getName(), datasetFolders[i].getName()),
+                        getDatasetStatus(project.getName(), datasetFolders[i].getName())));
             }
         }
 
@@ -1328,6 +1387,8 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
         File projectFolder = new File(storeBioinfoFolder, projectName);
         File datasetFolder = new File(projectFolder, datasetName);
         File metaFile = new File(datasetFolder, "meta.xml");
+
+        // @TODO: replace by propper xml parsing!!
 
         try {
             FileReader r = new FileReader(metaFile);
@@ -1400,10 +1461,12 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
                 File projectFolder = new File(storeBioinfoFolder, projectName);
                 File metaFile = new File(projectFolder, "meta.xml");
 
+                // @TODO: replace by propper xml parsing!!
+
                 FileReader r = new FileReader(metaFile);
                 BufferedReader br = new BufferedReader(r);
 
-                br.readLine(); // skip the project line
+                String project = br.readLine();
                 String quotaId = br.readLine();
                 String description = br.readLine();
                 String summary = br.readLine();
@@ -1417,7 +1480,7 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
                 ArrayList<String> userInvites = new ArrayList<String>();
                 boolean maillInviteOwner = false;
                 boolean userInviteOwner = false;
-                
+
                 String temp = br.readLine();
 
                 if (temp != null && temp.contains("mail_invites")) {
@@ -1454,14 +1517,21 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
                     }
                 }
 
+                // special case for pi_user_name as this can appear as '<pi_user_name/>'
+                if (pi_user_name.indexOf("</pi_user_name>") != -1) {
+                    pi_user_name = pi_user_name.substring(pi_user_name.indexOf("<pi_user_name>") + "<pi_user_name>".length(),
+                            pi_user_name.indexOf("</pi_user_name>"));
+                } else {
+                    pi_user_name = "";
+                }
+
                 Project newProject = new Project(
                         quotaId.substring(quotaId.indexOf("<quota_id>") + "<quota_id>".length(),
                         quotaId.indexOf("</quota_id>")),
                         projectName,
                         pi_name.substring(pi_name.indexOf("<pi_name>") + "<pi_name>".length(),
                         pi_name.indexOf("</pi_name>")),
-                        pi_user_name.substring(pi_user_name.indexOf("<pi_user_name>") + "<pi_user_name>".length(),
-                        pi_user_name.indexOf("</pi_user_name>")),
+                        pi_user_name,
                         pi_email.substring(pi_email.indexOf("<pi_email>") + "<pi_email>".length(),
                         pi_email.indexOf("</pi_email>")),
                         pi_telephone.substring(pi_telephone.indexOf("<pi_telephone>") + "<pi_telephone>".length(),
@@ -1470,7 +1540,9 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
                         summary.indexOf("</summary>")),
                         description.substring(description.indexOf("<description>") + "<description>".length(),
                         description.indexOf("</description>")),
-                        mailInvites, userInvites, maillInviteOwner, userInviteOwner);
+                        mailInvites, userInvites, maillInviteOwner, userInviteOwner,
+                        project.substring(project.indexOf("=") + 2,
+                        project.indexOf("\">")));
 
                 br.close();
                 r.close();
@@ -1484,6 +1556,38 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
         }
 
         return null;
+    }
+
+    /**
+     * Get the dataset status.
+     *
+     * @param projectName
+     * @param datasetName
+     * @return the dataset status
+     */
+    private String getDatasetStatus(String projectName, String datasetName) {
+
+        String status;
+
+        File projectFolder = new File(storeBioinfoFolder, projectName);
+        File datasetFolder = new File(projectFolder, datasetName);
+        File metaFile = new File(datasetFolder, "meta.xml");
+
+        // @TODO: replace by propper xml parsing!!
+
+        try {
+            FileReader r = new FileReader(metaFile);
+            BufferedReader br = new BufferedReader(r);
+            status = br.readLine();
+            status = status.substring(status.indexOf("=") + 2, status.indexOf("\">"));
+            br.close();
+            r.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        return status;
     }
 
     /**
@@ -1593,7 +1697,7 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
                 FileWriter f = new FileWriter(metaFile);
                 BufferedWriter bw = new BufferedWriter(f);
 
-                String meta = "<dataset status=\"new\">\n";
+                String meta = "<dataset status=\"" + dataset.getDatasetStatus() + "\">\n";
                 meta += "\t<description>" + dataset.getDescription() + "</description>" + "\n";
 
                 for (int i = 0; i < dataset.getDataFolders().size(); i++) {
@@ -1612,6 +1716,11 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
                 JOptionPane.showMessageDialog(this, "Dataset \'" + dataset.getName() + "\' failed to create meta.xml!", "Dataset Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
+
+            // update the status of the parent project
+            Project tempProject = readProjectMetaData(projectName);
+            tempProject.setProjectStatus("partial");
+            createProjectMetaData(tempProject, true);
 
             updateProjectsList(projectName);
             projectsTableMouseReleased(null);
@@ -1707,7 +1816,7 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
 
     /**
      * Returns the quota names.
-     * 
+     *
      * @return the quotaNames
      */
     public ArrayList<String> getQuotaNames() {
@@ -1716,7 +1825,7 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
 
     /**
      * Returns the quota id for a given quota name.
-     * 
+     *
      * @param quotaName the quota to get the id for
      * @return the quotaNameToIdsMap
      */

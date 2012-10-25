@@ -57,6 +57,10 @@ public class Project {
      * If true, a user invite will be sent to the data owner.
      */
     private boolean sendUserInviteToDataOwner;
+    /**
+     * The status of the project.
+     */
+    private String projectStatus;
 
     /**
      * Create a new Project.
@@ -73,10 +77,11 @@ public class Project {
      * @param userInvites the user invites
      * @param sendMailInviteToDataOwner if true, a mail invite will be sent to the data owner
      * @param sendUserInviteToDataOwner if true, a user invite will be sent to the data owner
+     * @param projectStatus the status of the project 
      */
     public Project(String quotaId, String name, String contact, String ownerUserName, String eMail, String phone, String summary, 
             String description, ArrayList<String> mailInvites, ArrayList<String> userInvites, 
-            boolean sendMailInviteToDataOwner, boolean sendUserInviteToDataOwner) {
+            boolean sendMailInviteToDataOwner, boolean sendUserInviteToDataOwner, String projectStatus) {
         this.quotaId = quotaId;
         this.name = name;
         this.contact = contact;
@@ -89,6 +94,7 @@ public class Project {
         this.userInvites = userInvites;
         this.sendMailInviteToDataOwner = sendMailInviteToDataOwner;
         this.sendUserInviteToDataOwner = sendUserInviteToDataOwner;
+        this.projectStatus = projectStatus;
     }
 
     /**
@@ -305,5 +311,23 @@ public class Project {
      */
     public void setOwnerUserName(String ownerUserName) {
         this.ownerUserName = ownerUserName;
+    }
+
+    /**
+     * Returns the status of the project.
+     * 
+     * @return the projectStatus
+     */
+    public String getProjectStatus() {
+        return projectStatus;
+    }
+
+    /**
+     * Set the status of the project.
+     * 
+     * @param projectStatus the projectStatus to set
+     */
+    public void setProjectStatus(String projectStatus) {
+        this.projectStatus = projectStatus;
     }
 }

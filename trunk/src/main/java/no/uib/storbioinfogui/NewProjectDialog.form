@@ -374,6 +374,9 @@
           </Properties>
         </Component>
         <Component class="javax.swing.JTextField" name="storeBioinfoOwnerTextField">
+          <Events>
+            <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="storeBioinfoOwnerTextFieldKeyReleased"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>
@@ -491,12 +494,14 @@
         <Component class="javax.swing.JCheckBox" name="userInviteToDataOwnerCheckBox">
           <Properties>
             <Property name="text" type="java.lang.String" value="Invite data owner"/>
+            <Property name="enabled" type="boolean" value="false"/>
             <Property name="iconTextGap" type="int" value="15"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JCheckBox" name="mailInviteToDataOwnerCheckBox">
           <Properties>
             <Property name="text" type="java.lang.String" value="Invite data owner"/>
+            <Property name="enabled" type="boolean" value="false"/>
             <Property name="iconTextGap" type="int" value="15"/>
           </Properties>
         </Component>

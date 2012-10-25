@@ -38,7 +38,7 @@ public class XMLUtility {
      * 
      * @param sTag the tag to get the value for
      * @param eElement the element to get
-     * @return 
+     * @return the given tag value
      */
     public static String getTagValue(String sTag, Element eElement) {
         NodeList nlList = eElement.getElementsByTagName(sTag).item(0).getChildNodes();

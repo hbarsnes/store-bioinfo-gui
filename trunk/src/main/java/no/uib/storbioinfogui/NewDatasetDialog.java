@@ -32,6 +32,10 @@ public class NewDatasetDialog extends javax.swing.JDialog {
      */
     private String description;
     /**
+     * The dataset status.
+     */
+    private String datasetStatus = "new";
+    /**
      * The list of data folders.
      */
     private ArrayList<DataFolder> dataFolders;
@@ -76,6 +80,7 @@ public class NewDatasetDialog extends javax.swing.JDialog {
         this.projectName = dataset.getProjectName();
         this.datasetName = dataset.getName();
         this.description = dataset.getDescription();
+        this.datasetStatus = dataset.getDatasetStatus();
         dataFolders = dataset.getDataFolders();
         editMode = true;
 
@@ -393,7 +398,13 @@ public class NewDatasetDialog extends javax.swing.JDialog {
                             (String) dataFoldersJTable.getValueAt(i, dataFoldersJTable.getColumn("Type").getModelIndex())));
                 }
 
-                storeBioinfoGUI.addDataset(projectName, new Dataset(nameJTextField.getText(), descriptionTextArea.getText(), projectName, dataFolders));
+                String tempDatasetStatus = "new";
+
+                if (editMode) {
+                   tempDatasetStatus = "partial"; // @TODO: note that this assumes that data has been added
+                }
+
+                storeBioinfoGUI.addDataset(projectName, new Dataset(nameJTextField.getText(), descriptionTextArea.getText(), projectName, dataFolders, tempDatasetStatus));
                 this.dispose();
             }
         }
