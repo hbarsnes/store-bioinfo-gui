@@ -245,6 +245,12 @@ public class NewProjectDialog extends javax.swing.JDialog {
 
         storeBioinfoOwnerLabel.setText("StoreBioinfo User");
 
+        storeBioinfoOwnerTextField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                storeBioinfoOwnerTextFieldKeyReleased(evt);
+            }
+        });
+
         javax.swing.GroupLayout dataOwnerPanelLayout = new javax.swing.GroupLayout(dataOwnerPanel);
         dataOwnerPanel.setLayout(dataOwnerPanelLayout);
         dataOwnerPanelLayout.setHorizontalGroup(
@@ -316,9 +322,11 @@ public class NewProjectDialog extends javax.swing.JDialog {
         userInvitesJScrollPane.setViewportView(userInvitesJTextArea);
 
         userInviteToDataOwnerCheckBox.setText("Invite data owner");
+        userInviteToDataOwnerCheckBox.setEnabled(false);
         userInviteToDataOwnerCheckBox.setIconTextGap(15);
 
         mailInviteToDataOwnerCheckBox.setText("Invite data owner");
+        mailInviteToDataOwnerCheckBox.setEnabled(false);
         mailInviteToDataOwnerCheckBox.setIconTextGap(15);
 
         javax.swing.GroupLayout invitesPanelLayout = new javax.swing.GroupLayout(invitesPanel);
@@ -450,7 +458,8 @@ public class NewProjectDialog extends javax.swing.JDialog {
 
                 Project project = new Project(storeBioinfoGUI.getQuotaId(quotaIdComboBox.getSelectedItem().toString()), nameJTextField.getText().trim(), contactJTextField.getText().trim(), 
                         storeBioinfoOwnerTextField.getText().trim(), eMailJTextField.getText().trim(), phoneJTextField.getText().trim(), summaryJTextField.getText().trim(), 
-                        descriptionJTextArea.getText().trim(), mailInvites, userInvites, userInviteToDataOwnerCheckBox.isSelected(), mailInviteToDataOwnerCheckBox.isSelected());
+                        descriptionJTextArea.getText().trim(), mailInvites, userInvites, userInviteToDataOwnerCheckBox.isSelected() && userInviteToDataOwnerCheckBox.isEnabled(), 
+                        mailInviteToDataOwnerCheckBox.isSelected() && mailInviteToDataOwnerCheckBox.isEnabled(), "new"); // @TODO: "new" should not be hardcoded here if the editing of projects is supported!!
                 boolean created = storeBioinfoGUI.addProject(project);
                 this.dispose();
             }
@@ -493,6 +502,7 @@ public class NewProjectDialog extends javax.swing.JDialog {
      */
     private void eMailJTextFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_eMailJTextFieldKeyReleased
         validateInput();
+        mailInviteToDataOwnerCheckBox.setEnabled(eMailJTextField.getText().length() > 0);
     }//GEN-LAST:event_eMailJTextFieldKeyReleased
 
     /**
@@ -548,6 +558,15 @@ public class NewProjectDialog extends javax.swing.JDialog {
     private void quotaIdComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_quotaIdComboBoxActionPerformed
          validateInput();
     }//GEN-LAST:event_quotaIdComboBoxActionPerformed
+
+    /**
+     * Enable/disable the mail invite owner check box.
+     * 
+     * @param evt 
+     */
+    private void storeBioinfoOwnerTextFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_storeBioinfoOwnerTextFieldKeyReleased
+        userInviteToDataOwnerCheckBox.setEnabled(storeBioinfoOwnerTextField.getText().length() > 0);
+    }//GEN-LAST:event_storeBioinfoOwnerTextFieldKeyReleased
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancelJButton;

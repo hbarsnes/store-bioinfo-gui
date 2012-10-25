@@ -177,7 +177,7 @@
                 <Component class="javax.swing.JTable" name="projectsTable">
                   <Properties>
                     <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-                      <Table columnCount="8" rowCount="0">
+                      <Table columnCount="9" rowCount="0">
                         <Column editable="false" title=" " type="java.lang.Integer"/>
                         <Column editable="false" title="Quota" type="java.lang.String"/>
                         <Column editable="false" title="Name" type="java.lang.String"/>
@@ -186,6 +186,7 @@
                         <Column editable="false" title="Phone" type="java.lang.Object"/>
                         <Column editable="false" title="Summary" type="java.lang.String"/>
                         <Column editable="false" title="Datasets" type="java.lang.Integer"/>
+                        <Column editable="false" title="  " type="java.lang.Integer"/>
                       </Table>
                     </Property>
                     <Property name="selectionModel" type="javax.swing.ListSelectionModel" editor="org.netbeans.modules.form.editors2.JTableSelectionModelEditor">
@@ -383,10 +384,11 @@
                 <Component class="javax.swing.JTable" name="datasetsTable">
                   <Properties>
                     <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-                      <Table columnCount="3" rowCount="0">
+                      <Table columnCount="4" rowCount="0">
                         <Column editable="false" title=" " type="java.lang.Integer"/>
                         <Column editable="false" title="Name" type="java.lang.String"/>
                         <Column editable="false" title="Description" type="java.lang.String"/>
+                        <Column editable="false" title="  " type="java.lang.Integer"/>
                       </Table>
                     </Property>
                     <Property name="selectionModel" type="javax.swing.ListSelectionModel" editor="org.netbeans.modules.form.editors2.JTableSelectionModelEditor">

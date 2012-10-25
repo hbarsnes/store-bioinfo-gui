@@ -131,6 +131,7 @@ public class NewDataFolderDialog extends javax.swing.JDialog {
         );
 
         okJButton.setText("OK");
+        okJButton.setEnabled(false);
         okJButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 okJButtonActionPerformed(evt);
@@ -212,18 +213,19 @@ public class NewDataFolderDialog extends javax.swing.JDialog {
         JFileChooser fileChooser = new JFileChooser(datasetDialog.getStoreBioinfoGUI().getLastSelectedFolder());
         fileChooser.setDialogTitle("Select Data Folder");
         fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-        
+
         int returnVal = fileChooser.showOpenDialog(this);
 
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fileChooser.getSelectedFile();
             datasetDialog.getStoreBioinfoGUI().setLastSelectedFolder(selectedFile.getParent());
-            
+
             if (!selectedFile.getAbsolutePath().startsWith(datasetDialog.getStoreBioinfoGUI().getMappedFolder().getAbsolutePath())) {
                 JOptionPane.showMessageDialog(this, "The datafolder has to be rooted in \'" + datasetDialog.getStoreBioinfoGUI().getMappedFolder().getAbsolutePath() + "\'.", 
                         "Datafolder Error", JOptionPane.INFORMATION_MESSAGE);
             } else {
                 folderTextField.setText(selectedFile.getAbsolutePath());
+                okJButton.setEnabled(true);
             } 
         }
     }//GEN-LAST:event_browseButtonActionPerformed

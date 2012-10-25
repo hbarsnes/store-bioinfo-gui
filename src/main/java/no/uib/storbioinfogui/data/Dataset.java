@@ -25,6 +25,10 @@ public class Dataset implements Comparable<Object> {
      * The set of data folders.
      */
     private ArrayList<DataFolder> dataFolders;
+    /**
+     * The status of the dataset.
+     */
+    private String datasetStatus;
 
     /**
      * Create a new dataset.
@@ -32,13 +36,15 @@ public class Dataset implements Comparable<Object> {
      * @param name the dataset name
      * @param description the dataset description
      * @param projectName the project the dataset belongs to
-     * @param dataFolders the set of data folders 
+     * @param dataFolders the set of data folders
+     * @param datasetStatus the status of the dataset 
      */
-    public Dataset(String name, String description, String projectName, ArrayList<DataFolder> dataFolders) {
+    public Dataset(String name, String description, String projectName, ArrayList<DataFolder> dataFolders, String datasetStatus) {
         this.name = name;
         this.projectName = projectName;
         this.description = description;
         this.dataFolders = dataFolders;
+        this.datasetStatus = datasetStatus;
     }
 
     /**
@@ -120,5 +126,23 @@ public class Dataset implements Comparable<Object> {
      */
     public void setDataFolders(ArrayList<DataFolder> dataFolders) {
         this.dataFolders = dataFolders;
+    }
+    
+    /**
+     * Returns the status of the dataset.
+     * 
+     * @return the datasetStatus
+     */
+    public String getDatasetStatus() {
+        return datasetStatus;
+    }
+
+    /**
+     * Set the status of the dataset.
+     * 
+     * @param datasetStatus the datasetStatus to set
+     */
+    public void setDatasetStatus(String datasetStatus) {
+        this.datasetStatus = datasetStatus;
     }
 }
