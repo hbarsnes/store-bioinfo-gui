@@ -110,12 +110,12 @@ public class NewDatasetDialog extends javax.swing.JDialog {
             descriptionTextArea.setCaretPosition(0);
 
             for (int i = 0; i < dataFolders.size(); i++) {
-                
+
                 ((DefaultTableModel) dataFoldersJTable.getModel()).addRow(new Object[]{
                             (i + 1),
                             dataFolders.get(i).getDataType(),
                             dataFolders.get(i).getRelativeFolderPath()
-                });
+                        });
             }
         }
     }
@@ -394,14 +394,14 @@ public class NewDatasetDialog extends javax.swing.JDialog {
                 dataFolders = new ArrayList<DataFolder>();
 
                 for (int i = 0; i < dataFoldersJTable.getRowCount(); i++) {
-                    dataFolders.add(new DataFolder((String) dataFoldersJTable.getValueAt(i, dataFoldersJTable.getColumn("Folder").getModelIndex()), 
+                    dataFolders.add(new DataFolder((String) dataFoldersJTable.getValueAt(i, dataFoldersJTable.getColumn("Folder").getModelIndex()),
                             (String) dataFoldersJTable.getValueAt(i, dataFoldersJTable.getColumn("Type").getModelIndex())));
                 }
 
                 String tempDatasetStatus = "new";
 
                 if (editMode) {
-                   tempDatasetStatus = "partial"; // @TODO: note that this assumes that data has been added
+                    tempDatasetStatus = "partial"; // @TODO: note that this assumes that data has been added
                 }
 
                 storeBioinfoGUI.addDataset(projectName, new Dataset(nameJTextField.getText(), descriptionTextArea.getText(), projectName, dataFolders, tempDatasetStatus));
@@ -523,11 +523,11 @@ public class NewDatasetDialog extends javax.swing.JDialog {
      * @param datasetType
      */
     public void insertDataFolder(String folderPath, String datasetType) {
-        
+
         // make the folder path relative to the mapped folder
         String tempPath = folderPath;
-        tempPath = tempPath.substring(storeBioinfoGUI.getMappedFolder().getAbsolutePath().length()); 
-        
+        tempPath = tempPath.substring(storeBioinfoGUI.getMappedFolder().getAbsolutePath().length() - 1);
+
         ((DefaultTableModel) dataFoldersJTable.getModel()).addRow(new Object[]{
                     dataFoldersJTable.getRowCount() + 1,
                     datasetType,
