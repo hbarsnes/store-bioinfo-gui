@@ -186,7 +186,7 @@ public class NewDataFolderDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     /**
-     * Close the dialgo without saving.
+     * Close the dialog without saving.
      * 
      * @param evt 
      */
