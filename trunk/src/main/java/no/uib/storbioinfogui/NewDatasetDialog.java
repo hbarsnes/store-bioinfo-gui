@@ -2,6 +2,7 @@ package no.uib.storbioinfogui;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.io.File;
 import java.util.ArrayList;
 import no.uib.storbioinfogui.data.Dataset;
 import javax.swing.JOptionPane;
@@ -526,7 +527,11 @@ public class NewDatasetDialog extends javax.swing.JDialog {
 
         // make the folder path relative to the mapped folder
         String tempPath = folderPath;
-        tempPath = tempPath.substring(storeBioinfoGUI.getMappedFolder().getAbsolutePath().length() - 1);
+        tempPath = tempPath.substring(storeBioinfoGUI.getMappedFolder().getAbsolutePath().length());
+        
+        if (!tempPath.startsWith(File.separator)) {
+            tempPath = File.separator + tempPath;
+        }
 
         ((DefaultTableModel) dataFoldersJTable.getModel()).addRow(new Object[]{
                     dataFoldersJTable.getRowCount() + 1,
