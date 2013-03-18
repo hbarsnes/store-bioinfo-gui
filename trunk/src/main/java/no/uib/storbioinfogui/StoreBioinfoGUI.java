@@ -1001,7 +1001,6 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
                 new String[]{
                     " ", "Name", "Description"
                 }) {
-
             public Class getColumnClass(int columnIndex) {
 
                 switch (columnIndex) {
@@ -1068,13 +1067,19 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
 
                 File tempDataFolder = new File(mappedFolder, dataFolder.getRelativeFolderPath());
 
-                // get the number of files in the given data folder
-                if (dataFileCounter.containsKey(dataFolder.getDataType())) {
-                    Integer count = dataFileCounter.get(dataFolder.getDataType());
-                    count += tempDataFolder.listFiles().length;
-                    dataFileCounter.put(dataFolder.getDataType(), ++count);
+                if (!tempDataFolder.exists()) {
+                    JOptionPane.showMessageDialog(this, "Data folder \'" + tempDataFolder.getAbsolutePath() + "\' not found!\n"
+                            + "Project name: \'" + projectName + "\'.\n"
+                            + "Dataset name: \'" + datasets.get(i).getName() + "\'.", "Data Folder Error", JOptionPane.ERROR_MESSAGE);
                 } else {
-                    dataFileCounter.put(dataFolder.getDataType(), tempDataFolder.listFiles().length);
+                    // get the number of files in the given data folder
+                    if (dataFileCounter.containsKey(dataFolder.getDataType())) {
+                        Integer count = dataFileCounter.get(dataFolder.getDataType());
+                        count += tempDataFolder.listFiles().length;
+                        dataFileCounter.put(dataFolder.getDataType(), ++count);
+                    } else {
+                        dataFileCounter.put(dataFolder.getDataType(), tempDataFolder.listFiles().length);
+                    }
                 }
             }
 
@@ -1150,7 +1155,6 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
          * Create and display the form
          */
         java.awt.EventQueue.invokeLater(new Runnable() {
-
             public void run() {
                 StoreBioinfoGUI storeBioinfoGUI = new StoreBioinfoGUI();
                 storeBioinfoGUI.setLocationRelativeTo(null);
