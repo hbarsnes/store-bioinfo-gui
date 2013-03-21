@@ -1544,7 +1544,7 @@ public class StoreBioinfoGUI extends javax.swing.JFrame implements ClipboardOwne
                         summary.indexOf("</summary>")),
                         description.substring(description.indexOf("<description>") + "<description>".length(),
                         description.indexOf("</description>")),
-                        mailInvites, userInvites, maillInviteOwner, userInviteOwner,
+                        userInvites, mailInvites, userInviteOwner, maillInviteOwner,
                         project.substring(project.indexOf("=") + 2,
                         project.indexOf("\">")));
 

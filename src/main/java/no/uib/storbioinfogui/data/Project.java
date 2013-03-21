@@ -73,15 +73,15 @@ public class Project {
      * @param phone contact phone number
      * @param summary project summary
      * @param description project description
-     * @param mailInvites the mail invites
      * @param userInvites the user invites
-     * @param sendMailInviteToDataOwner if true, a mail invite will be sent to the data owner
+     * @param mailInvites the mail invites
      * @param sendUserInviteToDataOwner if true, a user invite will be sent to the data owner
+     * @param sendMailInviteToDataOwner if true, a mail invite will be sent to the data owner
      * @param projectStatus the status of the project 
      */
     public Project(String quotaId, String name, String contact, String ownerUserName, String eMail, String phone, String summary, 
-            String description, ArrayList<String> mailInvites, ArrayList<String> userInvites, 
-            boolean sendMailInviteToDataOwner, boolean sendUserInviteToDataOwner, String projectStatus) {
+            String description, ArrayList<String> userInvites, ArrayList<String> mailInvites, 
+            boolean sendUserInviteToDataOwner, boolean sendMailInviteToDataOwner, String projectStatus) {
         this.quotaId = quotaId;
         this.name = name;
         this.contact = contact;

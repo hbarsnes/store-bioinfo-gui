@@ -458,7 +458,7 @@ public class NewProjectDialog extends javax.swing.JDialog {
 
                 Project project = new Project(storeBioinfoGUI.getQuotaId(quotaIdComboBox.getSelectedItem().toString()), nameJTextField.getText().trim(), contactJTextField.getText().trim(), 
                         storeBioinfoOwnerTextField.getText().trim(), eMailJTextField.getText().trim(), phoneJTextField.getText().trim(), summaryJTextField.getText().trim(), 
-                        descriptionJTextArea.getText().trim(), mailInvites, userInvites, userInviteToDataOwnerCheckBox.isSelected() && userInviteToDataOwnerCheckBox.isEnabled(), 
+                        descriptionJTextArea.getText().trim(), userInvites, mailInvites, userInviteToDataOwnerCheckBox.isSelected() && userInviteToDataOwnerCheckBox.isEnabled(), 
                         mailInviteToDataOwnerCheckBox.isSelected() && mailInviteToDataOwnerCheckBox.isEnabled(), "new"); // @TODO: "new" should not be hardcoded here if the editing of projects is supported!!
                 boolean created = storeBioinfoGUI.addProject(project);
                 this.dispose();
