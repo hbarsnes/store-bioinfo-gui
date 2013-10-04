@@ -433,35 +433,40 @@ public class NewProjectDialog extends javax.swing.JDialog {
      */
     private void okJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okJButtonActionPerformed
 
-        // validate the input
-        if (!validateInput()) {
-            JOptionPane.showMessageDialog(this, "All fields have to be filled in.", "Dataset Error", JOptionPane.INFORMATION_MESSAGE);
+        if (nameJTextField.getText().lastIndexOf(" ") != -1) {
+            JOptionPane.showMessageDialog(this, "Project name cannot contain spaces.", "Project Error", JOptionPane.INFORMATION_MESSAGE);
         } else {
 
-            // check if project already exists
-            if (storeBioinfoGUI.projectExists(nameJTextField.getText().trim())) {
-                JOptionPane.showMessageDialog(this, "Project named \'" + nameJTextField.getText().trim() + "\' already exists!", "Project Error", JOptionPane.ERROR_MESSAGE);
+            // validate the input
+            if (!validateInput()) {
+                JOptionPane.showMessageDialog(this, "All fields have to be filled in.", "Project Error", JOptionPane.INFORMATION_MESSAGE);
             } else {
-                this.setVisible(false);
 
-                // convert the invites to the correct format
-                ArrayList<String> mailInvites = new ArrayList<String>();
-                if (mailInvitesJTextArea.getText().length() > 0) {
-                    String values[] = mailInvitesJTextArea.getText().split(","); // @TODO: add more error checking here?
-                    mailInvites.addAll(Arrays.asList(values));
-                }
-                ArrayList<String> userInvites = new ArrayList<String>();
-                if (userInvitesJTextArea.getText().length() > 0) {
-                    String values[] = userInvitesJTextArea.getText().split(","); // @TODO: add more error checking here?
-                    userInvites.addAll(Arrays.asList(values));
-                }
+                // check if project already exists
+                if (storeBioinfoGUI.projectExists(nameJTextField.getText().trim())) {
+                    JOptionPane.showMessageDialog(this, "Project named \'" + nameJTextField.getText().trim() + "\' already exists!", "Project Error", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    this.setVisible(false);
 
-                Project project = new Project(storeBioinfoGUI.getQuotaId(quotaIdComboBox.getSelectedItem().toString()), nameJTextField.getText().trim(), contactJTextField.getText().trim(), 
-                        storeBioinfoOwnerTextField.getText().trim(), eMailJTextField.getText().trim(), phoneJTextField.getText().trim(), summaryJTextField.getText().trim(), 
-                        descriptionJTextArea.getText().trim(), userInvites, mailInvites, userInviteToDataOwnerCheckBox.isSelected() && userInviteToDataOwnerCheckBox.isEnabled(), 
-                        mailInviteToDataOwnerCheckBox.isSelected() && mailInviteToDataOwnerCheckBox.isEnabled(), "new"); // @TODO: "new" should not be hardcoded here if the editing of projects is supported!!
-                boolean created = storeBioinfoGUI.addProject(project);
-                this.dispose();
+                    // convert the invites to the correct format
+                    ArrayList<String> mailInvites = new ArrayList<String>();
+                    if (mailInvitesJTextArea.getText().length() > 0) {
+                        String values[] = mailInvitesJTextArea.getText().split(","); // @TODO: add more error checking here?
+                        mailInvites.addAll(Arrays.asList(values));
+                    }
+                    ArrayList<String> userInvites = new ArrayList<String>();
+                    if (userInvitesJTextArea.getText().length() > 0) {
+                        String values[] = userInvitesJTextArea.getText().split(","); // @TODO: add more error checking here?
+                        userInvites.addAll(Arrays.asList(values));
+                    }
+
+                    Project project = new Project(storeBioinfoGUI.getQuotaId(quotaIdComboBox.getSelectedItem().toString()), nameJTextField.getText().trim(), contactJTextField.getText().trim(),
+                            storeBioinfoOwnerTextField.getText().trim(), eMailJTextField.getText().trim(), phoneJTextField.getText().trim(), summaryJTextField.getText().trim(),
+                            descriptionJTextArea.getText().trim(), userInvites, mailInvites, userInviteToDataOwnerCheckBox.isSelected() && userInviteToDataOwnerCheckBox.isEnabled(),
+                            mailInviteToDataOwnerCheckBox.isSelected() && mailInviteToDataOwnerCheckBox.isEnabled(), "new"); // @TODO: "new" should not be hardcoded here if the editing of projects is supported!!
+                    boolean created = storeBioinfoGUI.addProject(project);
+                    this.dispose();
+                }
             }
         }
     }//GEN-LAST:event_okJButtonActionPerformed
@@ -472,15 +477,15 @@ public class NewProjectDialog extends javax.swing.JDialog {
      * @param evt
      */
     private void okJButtonKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_okJButtonKeyReleased
-        if(evt.getKeyCode() == KeyEvent.VK_ENTER) {
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             okJButtonActionPerformed(null);
         }
     }//GEN-LAST:event_okJButtonKeyReleased
 
     /**
      * Validate the input.
-     * 
-     * @param evt 
+     *
+     * @param evt
      */
     private void nameJTextFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_nameJTextFieldKeyReleased
         validateInput();
@@ -488,8 +493,8 @@ public class NewProjectDialog extends javax.swing.JDialog {
 
     /**
      * Validate the input.
-     * 
-     * @param evt 
+     *
+     * @param evt
      */
     private void contactJTextFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_contactJTextFieldKeyReleased
         validateInput();
@@ -497,8 +502,8 @@ public class NewProjectDialog extends javax.swing.JDialog {
 
     /**
      * Validate the input.
-     * 
-     * @param evt 
+     *
+     * @param evt
      */
     private void eMailJTextFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_eMailJTextFieldKeyReleased
         validateInput();
@@ -507,8 +512,8 @@ public class NewProjectDialog extends javax.swing.JDialog {
 
     /**
      * Validate the input.
-     * 
-     * @param evt 
+     *
+     * @param evt
      */
     private void phoneJTextFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_phoneJTextFieldKeyReleased
         validateInput();
@@ -516,8 +521,8 @@ public class NewProjectDialog extends javax.swing.JDialog {
 
     /**
      * Validate the input.
-     * 
-     * @param evt 
+     *
+     * @param evt
      */
     private void summaryJTextFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_summaryJTextFieldKeyReleased
         validateInput();
@@ -525,8 +530,8 @@ public class NewProjectDialog extends javax.swing.JDialog {
 
     /**
      * Validate the input.
-     * 
-     * @param evt 
+     *
+     * @param evt
      */
     private void descriptionJTextAreaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_descriptionJTextAreaKeyReleased
         validateInput();
@@ -534,8 +539,8 @@ public class NewProjectDialog extends javax.swing.JDialog {
 
     /**
      * Validate the input.
-     * 
-     * @param evt 
+     *
+     * @param evt
      */
     private void mailInvitesJTextAreaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_mailInvitesJTextAreaKeyReleased
         validateInput();
@@ -543,8 +548,8 @@ public class NewProjectDialog extends javax.swing.JDialog {
 
     /**
      * Validate the input.
-     * 
-     * @param evt 
+     *
+     * @param evt
      */
     private void userInvitesJTextAreaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_userInvitesJTextAreaKeyReleased
         validateInput();
@@ -552,22 +557,21 @@ public class NewProjectDialog extends javax.swing.JDialog {
 
     /**
      * Validate the input.
-     * 
-     * @param evt 
+     *
+     * @param evt
      */
     private void quotaIdComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_quotaIdComboBoxActionPerformed
-         validateInput();
+        validateInput();
     }//GEN-LAST:event_quotaIdComboBoxActionPerformed
 
     /**
      * Enable/disable the mail invite owner check box.
-     * 
-     * @param evt 
+     *
+     * @param evt
      */
     private void storeBioinfoOwnerTextFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_storeBioinfoOwnerTextFieldKeyReleased
         userInviteToDataOwnerCheckBox.setEnabled(storeBioinfoOwnerTextField.getText().length() > 0);
     }//GEN-LAST:event_storeBioinfoOwnerTextFieldKeyReleased
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancelJButton;
     private javax.swing.JTextField contactJTextField;
@@ -605,14 +609,14 @@ public class NewProjectDialog extends javax.swing.JDialog {
 
     /**
      * Enable/disable the OK button.
-     * 
+     *
      * @return true of validated
      */
     private boolean validateInput() {
 
-        if (quotaIdComboBox.getSelectedItem() != null 
+        if (quotaIdComboBox.getSelectedItem() != null
                 && quotaIdComboBox.getSelectedItem().toString().length() > 0
-                && nameJTextField.getText().length() > 0 
+                && nameJTextField.getText().length() > 0
                 && contactJTextField.getText().length() > 0
                 && eMailJTextField.getText().length() > 0
                 && phoneJTextField.getText().length() > 0
