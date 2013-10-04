@@ -113,10 +113,10 @@ public class NewDatasetDialog extends javax.swing.JDialog {
             for (int i = 0; i < dataFolders.size(); i++) {
 
                 ((DefaultTableModel) dataFoldersJTable.getModel()).addRow(new Object[]{
-                            (i + 1),
-                            dataFolders.get(i).getDataType(),
-                            dataFolders.get(i).getRelativeFolderPath()
-                        });
+                    (i + 1),
+                    dataFolders.get(i).getDataType(),
+                    dataFolders.get(i).getRelativeFolderPath()
+                });
             }
         }
     }
@@ -381,32 +381,37 @@ public class NewDatasetDialog extends javax.swing.JDialog {
      */
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
 
-        // validate the input
-        if (nameJTextField.getText().length() == 0 || descriptionTextArea.getText().length() == 0) {
-            JOptionPane.showMessageDialog(this, "Both dataset name and description have to be filled in.", "Dataset Error", JOptionPane.INFORMATION_MESSAGE);
+        if (nameJTextField.getText().lastIndexOf(" ") != -1) {
+            JOptionPane.showMessageDialog(this, "Dataset name cannot contain spaces.", "Dataset Error", JOptionPane.INFORMATION_MESSAGE);
         } else {
 
-            // check if dataset already exists
-            if (!editMode && storeBioinfoGUI.datasetExists(projectName, nameJTextField.getText())) {
-                JOptionPane.showMessageDialog(this, "Dataset \'" + nameJTextField.getText() + "\' already exists!", "Dataset Error", JOptionPane.ERROR_MESSAGE);
+            // validate the input
+            if (nameJTextField.getText().length() == 0 || descriptionTextArea.getText().length() == 0) {
+                JOptionPane.showMessageDialog(this, "Both dataset name and description have to be filled in.", "Dataset Error", JOptionPane.INFORMATION_MESSAGE);
             } else {
-                this.setVisible(false);
 
-                dataFolders = new ArrayList<DataFolder>();
+                // check if dataset already exists
+                if (!editMode && storeBioinfoGUI.datasetExists(projectName, nameJTextField.getText())) {
+                    JOptionPane.showMessageDialog(this, "Dataset \'" + nameJTextField.getText() + "\' already exists!", "Dataset Error", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    this.setVisible(false);
 
-                for (int i = 0; i < dataFoldersJTable.getRowCount(); i++) {
-                    dataFolders.add(new DataFolder((String) dataFoldersJTable.getValueAt(i, dataFoldersJTable.getColumn("Folder").getModelIndex()),
-                            (String) dataFoldersJTable.getValueAt(i, dataFoldersJTable.getColumn("Type").getModelIndex())));
+                    dataFolders = new ArrayList<DataFolder>();
+
+                    for (int i = 0; i < dataFoldersJTable.getRowCount(); i++) {
+                        dataFolders.add(new DataFolder((String) dataFoldersJTable.getValueAt(i, dataFoldersJTable.getColumn("Folder").getModelIndex()),
+                                (String) dataFoldersJTable.getValueAt(i, dataFoldersJTable.getColumn("Type").getModelIndex())));
+                    }
+
+                    String tempDatasetStatus = "new";
+
+                    if (editMode) {
+                        tempDatasetStatus = "partial"; // @TODO: note that this assumes that data has been added
+                    }
+
+                    storeBioinfoGUI.addDataset(projectName, new Dataset(nameJTextField.getText(), descriptionTextArea.getText(), projectName, dataFolders, tempDatasetStatus));
+                    this.dispose();
                 }
-
-                String tempDatasetStatus = "new";
-
-                if (editMode) {
-                    tempDatasetStatus = "partial"; // @TODO: note that this assumes that data has been added
-                }
-
-                storeBioinfoGUI.addDataset(projectName, new Dataset(nameJTextField.getText(), descriptionTextArea.getText(), projectName, dataFolders, tempDatasetStatus));
-                this.dispose();
             }
         }
     }//GEN-LAST:event_okButtonActionPerformed
@@ -528,16 +533,16 @@ public class NewDatasetDialog extends javax.swing.JDialog {
         // make the folder path relative to the mapped folder
         String tempPath = folderPath;
         tempPath = tempPath.substring(storeBioinfoGUI.getMappedFolder().getAbsolutePath().length());
-        
+
         if (!tempPath.startsWith(File.separator)) {
             tempPath = File.separator + tempPath;
         }
 
         ((DefaultTableModel) dataFoldersJTable.getModel()).addRow(new Object[]{
-                    dataFoldersJTable.getRowCount() + 1,
-                    datasetType,
-                    tempPath
-                });
+            dataFoldersJTable.getRowCount() + 1,
+            datasetType,
+            tempPath
+        });
     }
 
     /**
